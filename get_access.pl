@@ -21,7 +21,7 @@ if (-f $yamlfile) {
     my $pin = <STDIN>;
     chomp $pin;
 
-    my ($token, $token_secret, $user_id, $screen_name) = $nt->request_access_token(verifier => $pin);
+    my($token, $token_secret, $user_id, $screen_name) = $nt->request_access_token(verifier => $pin);
     die "'$screen_name' has already registered!\n" if &is_dup_account($config, $user_id);
     print "Welcome, ${screen_name}!\n";
 
@@ -47,7 +47,7 @@ if (-f $yamlfile) {
     my $pin = <STDIN>;
     chomp $pin;
 
-    my ($token, $token_secret, $user_id, $screen_name) = $nt->request_access_token(verifier => $pin);
+    my($token, $token_secret, $user_id, $screen_name) = $nt->request_access_token(verifier => $pin);
     print "Welcome, ${screen_name}!\n";
 
     $config->{default_user} = $screen_name;
@@ -64,7 +64,7 @@ if (-f $yamlfile) {
 exit;
 
 sub is_dup_account {
-    my ($c, $id) = @_;
+    my($c, $id) = @_;
     for (keys $c->{users}) {
         return 1 if $c->{users}->{$_}->{id} == $id;
     }

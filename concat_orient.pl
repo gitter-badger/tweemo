@@ -44,7 +44,7 @@ my @res = split(/\n/, `echo "$s" |mecab`);
 my @os = ();
 for (@res) {
     if (/^(.+)\t(.+),(.+),(.+),(.+),(.+),(.+),(.+),(.+),(.+)$/) {
-        my ($p, $w, $r) = ($2, $8, $9);
+        my($p, $w, $r) = ($2, $8, $9);
         $p = decode('UTF-8', $p);
         $w = decode('UTF-8', $w);
         $r = decode('UTF-8', $r);
@@ -77,7 +77,7 @@ print $MSG;
 exit 0;
 
 sub get_orient {
-    my ($dbh, $w, $r, $p) = @_;
+    my($dbh, $w, $r, $p) = @_;
     my $sth = $dbh->prepare("SELECT orient FROM dictionary WHERE word=? AND reading=? AND pos=?;");
     $sth->execute($w, $r, $p);
     while (my $hr = $sth->fetchrow_arrayref) {
