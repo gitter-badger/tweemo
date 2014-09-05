@@ -1,6 +1,7 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
+use utf8;
 
 use FindBin qw($RealBin $RealScript);
 use Getopt::Long;
@@ -13,7 +14,7 @@ options:
  --user    set user
  --en      english tweet
 EOM
-    exit 0;
+    exit;
 }
 
 my $HELP;
@@ -30,14 +31,15 @@ GetOptions(
 
 if (@ARGV == 0) {
     system("$RealBin/get_access.pl");
-    exit 0;
+    exit;
 }
 
-my $tweet = $EN ? `$RealBin/concat_orient_en.pl '$ARGV[0]'`
-                : `$RealBin/concat_orient_ja.pl '$ARGV[0]'`;
-
+my $tweet = $ARGV[0];
+$tweet =~ s/"/\\"/g;
+$tweet = $EN ? `$RealBin/concat_orient_en.pl "$tweet"`
+             : `$RealBin/concat_orient_ja.pl "$tweet"`;
 if (defined $USER) {
-    system("$RealBin/post.pl --user=$USER '$tweet'");
+    system("$RealBin/post.pl", "--user=$USER", $tweet);
 } else {
-    system("$RealBin/post.pl '$tweet'");
+    system("$RealBin/post.pl",  $tweet);
 }

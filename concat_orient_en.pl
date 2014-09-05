@@ -5,7 +5,6 @@ use utf8;
 
 use DBI;
 use DBD::SQLite;
-use Encode;
 use FindBin qw($RealBin $RealScript);
 use Getopt::Long;
 use Statistics::Lite qw(mean);
@@ -14,7 +13,7 @@ sub usage {
     print <<EOM;
 usage: $RealScript 'message'
 EOM
-    exit 0;
+    exit;
 }
 
 my $D = "\t"; # delimiter
@@ -70,7 +69,8 @@ my $val = @os ? int(mean(@os) * (10**4)) / (10**4) : 0;
 $MSG .= " ($val)";
 print $MSG;
 
-exit 0;
+exit;
+
 
 sub get_orient {
     my($dbh, $w, $p) = @_;

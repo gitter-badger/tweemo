@@ -63,6 +63,7 @@ if (-f $yamlfile) {
 
 exit;
 
+
 sub is_dup_account {
     my($c, $id) = @_;
     for (keys $c->{users}) {

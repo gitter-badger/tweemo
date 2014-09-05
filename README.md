@@ -23,7 +23,7 @@ $ ./tweet-emo '今日も一日がんばるぞい！'
 # 登録済みアカウント user2
 $ ./tweet-emo --user=user2 'もうこんな仕事辞めたいぞい…'
 # Englis tweet
-$ ./tweet-emo --en 'Oh god, this is a bikeshed discussion.'
+$ ./tweet-emo --en "Oh god, it's a bikeshed discussion."
 ```
 
 ## Install

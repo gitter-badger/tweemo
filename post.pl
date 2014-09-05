@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use utf8;
 
-use Encode;
+use Encode qw(decode);
 use Getopt::Long;
 use Net::Twitter;
 use YAML::Tiny;
@@ -13,7 +13,7 @@ sub usage {
 usage: $0              'tweet message'
        $0 --user=user2 'tweet message'
 EOM
-    exit 0;
+    exit;
 }
 
 my $HELP;
