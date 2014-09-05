@@ -6,13 +6,13 @@ use utf8;
 use DBI;
 use DBD::SQLite;
 use Encode;
-use FindBin qw($Bin);
+use FindBin qw($RealBin $RealScript);
 use Getopt::Long;
-use Statistics::Lite 'mean';
+use Statistics::Lite qw(mean);
 
 sub usage {
     print <<EOM;
-usage: $0 'message'
+usage: $RealScript 'message'
 EOM
     exit 0;
 }
@@ -22,10 +22,9 @@ my $n_regex = qr/^名詞$/;
 my $a_regex = qr/^形容詞$/;
 my $r_regex = qr/^副詞$/;
 my $av_regex = qr/^助動詞$/;
-#my $s_regex = qr/^SENT$/;
 
 my $MSG = $ARGV[0];
-my $DIC_DB = "$Bin/db/pn_ja.dic.db";
+my $DB = "$RealBin/db/pn_ja.dic.db";
 my $HELP;
 
 GetOptions(
@@ -34,41 +33,41 @@ GetOptions(
 
 &usage() if $HELP;
 
-my $dic_dbh = DBI->connect("dbi:SQLite:dbname=$DIC_DB", undef, undef, 
+my $dbh = DBI->connect("dbi:SQLite:dbname=$DB", undef, undef, 
     {AutoCommit => 0, RaiseError => 1 });
-$dic_dbh->{sqlite_unicode} = 1;
+$dbh->{sqlite_unicode} = 1;
 
 my $s = $MSG;
 $s =~ s/"/\\"/g;
 my @res = split(/\n/, `echo "$s" |mecab`);
 my @os = ();
 for (@res) {
-    if (/^(.+)\t(.+),(.+),(.+),(.+),(.+),(.+),(.+),(.+),(.+)$/) {
-        my($p, $w, $r) = ($2, $8, $9);
+    if (/^.+\t(.+),.+,.+,.+,.+,.+,(.+),(.+),.+$/) {
+        my($p, $w, $r) = ($1, $2, $3);
         $p = decode('UTF-8', $p);
         $w = decode('UTF-8', $w);
         $r = decode('UTF-8', $r);
         if ($p =~ $v_regex) {
             # verb
-            push @os, &get_orient($dic_dbh, $w, $r, '動詞');
+            push @os, &get_orient($dbh, $w, $r, '動詞');
         } elsif ($p =~ $n_regex) {
             # noun
-            push @os, &get_orient($dic_dbh, $w, $r, '名詞');
+            push @os, &get_orient($dbh, $w, $r, '名詞');
         } elsif ($p =~ $a_regex) {
             # adjective
-            push @os, &get_orient($dic_dbh, $w, $r, '形容詞');
+            push @os, &get_orient($dbh, $w, $r, '形容詞');
         } elsif ($p =~ $r_regex) {
             # adverb
-            push @os, &get_orient($dic_dbh, $w, $r, '副詞');
+            push @os, &get_orient($dbh, $w, $r, '副詞');
         } elsif ($p =~ $av_regex) {
             # auxiliary verb
-            push @os, &get_orient($dic_dbh, $w, $r, '助動詞');
+            push @os, &get_orient($dbh, $w, $r, '助動詞');
         }
     }
 }
 
-$dic_dbh->commit;
-$dic_dbh->disconnect;
+$dbh->commit;
+$dbh->disconnect;
 
 my $val = @os ? int(mean(@os) * (10**4)) / (10**4) : 0;
 $MSG .= " ($val)";

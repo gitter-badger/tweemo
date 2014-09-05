@@ -2,37 +2,42 @@
 use strict;
 use warnings;
 
-use FindBin qw/$Bin/;
+use FindBin qw($RealBin $RealScript);
 use Getopt::Long;
 
 sub usage {
     print <<EOM;
-usage: $0              'tweet message'
-       $0 --user=user2 'tweet message'
-       $0  # add account
+usage: $RealScript 'tweet message'
+
+options:
+ --user    set user
+ --en      english tweet
 EOM
     exit 0;
 }
 
 my $HELP;
 my $USER;
+my $EN;
 
 GetOptions(
     'help'   => \$HELP,
     'user=s' => \$USER,
+    'en'     => \$EN,
 );
 
 &usage() if $HELP;
 
 if (@ARGV == 0) {
-    system("$Bin/get_access.pl");
+    system("$RealBin/get_access.pl");
     exit 0;
 }
 
-my $tweet = `$Bin/concat_orient.pl '$ARGV[0]'`;
+my $tweet = $EN ? `$RealBin/concat_orient_en.pl '$ARGV[0]'`
+                : `$RealBin/concat_orient_ja.pl '$ARGV[0]'`;
 
 if (defined $USER) {
-    system("$Bin/post.pl --user=$USER '$tweet'");
+    system("$RealBin/post.pl --user=$USER '$tweet'");
 } else {
-    system("$Bin/post.pl '$tweet'");
+    system("$RealBin/post.pl '$tweet'");
 }
