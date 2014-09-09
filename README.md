@@ -1,4 +1,4 @@
-tweet-emo
+tweemo
 ====
 
 つぶやく -> 平均感情値が出る -> 楽しい
@@ -19,11 +19,11 @@ tweet-emo
 
 ```
 # デフォルトアカウント
-$ ./tweet-emo '今日も一日がんばるぞい！'
+$ tweemo '今日も一日がんばるぞい！'
 # 登録済みアカウント user2
-$ ./tweet-emo --user=user2 'もうこんな仕事辞めたいぞい…'
+$ tweemo --user=user2 'もうこんな仕事辞めたいぞい…'
 # Englis tweet
-$ ./tweet-emo --en "Oh god, it's a bikeshed discussion."
+$ tweemo --en "Oh god, it's a bikeshed discussion."
 ```
 
 ## Install
@@ -31,14 +31,14 @@ $ ./tweet-emo --en "Oh god, it's a bikeshed discussion."
 ```
 $ brew install mecab mecab-ipadic
 $ cpanm DBI DBD::SQLite Net::Twitter Statistics::Lite YAML::Tiny
-$ git clone git@github.com:suruga/tweet-emo.git
+$ git clone git@github.com:suruga/tweemo.git
 ```                              
 英語つぶやきをしたい場合のみ，TreeTaggerをインストール後，PATHにtreetagger/{bin,cmd}を追加しておく．
 
 * 引数なしで実行すると，アカウント登録を行う．
-    * Twitter認証ページへ促され，そこで認証．端末へ戻りPINを入力すればホームディレクトリ直下の .tweet-emo.yml が更新される．
+    * Twitter認証ページへ促され，そこで認証．端末へ戻りPINを入力すれば ~/.tweemo.yml が更新される．
 * 複数アカウント対応．デフォルトは最初に登録したアカウント．
-    * デフォルトアカウントは .tweet-emo.yml の default_user: のユーザ名を直接書き換えることで変更可能．
+    * デフォルトアカウントは .tweemo.yml の default_user: のユーザ名を直接書き換えることで変更可能．
 
 ## Reference
 

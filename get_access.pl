@@ -5,7 +5,7 @@ use warnings;
 use Net::Twitter;
 use YAML::Tiny;
 
-my $yamlfile = "$ENV{'HOME'}/.tweet-emo.yml";
+my $yamlfile = "$ENV{'HOME'}/.tweemo.yml";
 if (-f $yamlfile) {
     my $yaml = YAML::Tiny->read($yamlfile);
     my $config = $yaml->[0];

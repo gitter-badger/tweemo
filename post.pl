@@ -26,7 +26,7 @@ GetOptions(
 
 &usage() if $HELP;
 
-my $yamlfile = "$ENV{'HOME'}/.tweet-emo.yml";
+my $yamlfile = "$ENV{'HOME'}/.tweemo.yml";
 my $yaml = YAML::Tiny->read($yamlfile);
 my $config = $yaml->[0];
 
