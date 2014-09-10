@@ -11,9 +11,9 @@ tweemo
 
 ## Requirement
 
-* [MeCab](https://code.google.com/p/mecab/)
-* [TreeTagger](http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/)（英語つぶやき時のみ必要）
-* perl module ( DBI, DBD::SQLite, Net::Twitter, Statistics::Lite )
+* [MeCab](https://code.google.com/p/mecab/)（日本語つぶやき時に必要）
+* [TreeTagger](http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/)（英語つぶやき時に必要）
+* perl module ( DBD::SQLite, DBI, Net::Twitter, Statistics::Lite, YAML::Tiny)
       
 ## Usage
 
@@ -40,7 +40,7 @@ $ git clone git@github.com:suruga/tweemo.git
 * 複数アカウント対応．デフォルトは最初に登録したアカウント．
     * デフォルトアカウントは .tweemo.yml の default_user: のユーザ名を直接書き換えることで変更可能．
 
-## Reference
+## See also
 
 [tw](https://github.com/shokai/tw)
 

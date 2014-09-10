@@ -1,0 +1,32 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use utf8;
+use 5.010;
+use FindBin qw($RealBin);
+
+use lib "$RealBin/../lib";
+use Tweemo::CLI;
+
+exit Tweemo::CLI->new->run(@ARGV);
+
+__END__
+
+=head1 NAME
+
+tweemo - Perl emotional twitter client
+
+=head1 SYNOPSIS
+
+  > tweemo      'japanese tweet'
+  > tweemo --en 'english tweet'
+
+=head1 DESCRIPTION
+
+For more documentation, refer to L<Tweemo> by running C<tweemo --help>.
+
+=head1 SEE ALSO
+
+L<Tweemo>
+
+=cut
