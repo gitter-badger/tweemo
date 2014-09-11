@@ -36,8 +36,8 @@ sub add_user {
         $yaml->write($yamlfile);
     } else {
         my $config;
-        $config->{consumer_key}    = 'K7de8RUzO1udZJn7UReyzLzcE';
-        $config->{consumer_secret} = 'MEyJJkRHgDySizh5jU8otA4IGrDsgXxOmffEjPZRVHMCDA8c7o';
+        $config->{consumer_key}    = 'quundbKr6xsKYiMzimSPn2Qb9';
+        $config->{consumer_secret} = 'vRv3uBzoClXT9fn0qpqT3qmaSj0yB1jN2ENj8DcgYC3zR1qUxE';
 
         my $nt = Net::Twitter->new(
             traits => ['API::RESTv1_1'],
