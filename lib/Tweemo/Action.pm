@@ -4,6 +4,7 @@ use warnings;
 use utf8;
 use 5.010;
 use Encode qw(decode);
+use File::Spec;
 use Moo;
 use Net::Twitter;
 use YAML::Tiny;
@@ -15,7 +16,7 @@ sub post {
     my $tweet = shift @args or die "error: no args";
        $tweet = decode('UTF-8', $tweet);
 
-    my $yamlfile = "$ENV{'HOME'}/.tweemo.yml";
+    my $yamlfile = File::Spec->catfile($ENV{'HOME'}, '.tweemo.yml');
     my $yaml = YAML::Tiny->read($yamlfile);
     my $config = $yaml->[0];
 

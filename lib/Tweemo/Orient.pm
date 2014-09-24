@@ -6,6 +6,7 @@ use 5.010;
 use DBI;
 use DBD::SQLite;
 use Encode qw(decode);
+use File::Spec;
 use FindBin qw($RealBin);
 use Moo;
 use Statistics::Lite qw(mean);
@@ -23,7 +24,7 @@ sub concat_orient_en {
     my $a_regex = qr/^(JJ|JJR|JJS)$/;
     my $r_regex = qr/^(RB|RBR|RBS)$/;
 
-    my $db = "$RealBin/../db/pn_en.dic.db";
+    my $db = File::Spec->catfile($RealBin, File::Spec->updir, 'db', 'pn_en.dic.db');
     my $dbh = DBI->connect("dbi:SQLite:dbname=$db", undef, undef, 
         {AutoCommit => 0, RaiseError => 1 });
     $dbh->{sqlite_unicode} = 1;
@@ -78,7 +79,7 @@ sub concat_orient_ja {
     my($v_regex, $n_regex, $a_regex, $r_regex, $av_regex)
         = (qr/^動詞$/, qr/^名詞$/, qr/^形容詞$/, qr/^副詞$/, qr/^助動詞$/);
 
-    my $db = "$RealBin/../db/pn_ja.dic.db";
+    my $db = File::Spec->catfile($RealBin, File::Spec->updir, 'db', 'pn_ja.dic.db');
     my $dbh = DBI->connect("dbi:SQLite:dbname=$db", undef, undef, 
         {AutoCommit => 0, RaiseError => 1 });
     $dbh->{sqlite_unicode} = 1;

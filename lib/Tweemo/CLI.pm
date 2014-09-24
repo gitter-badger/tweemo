@@ -59,7 +59,8 @@ sub cmd_man {
     my $self = shift;
     my $p = $RealBin;
        $p =~ s/(.+)\/.+/$1/;
-    system 'perldoc', "$RealBin/../lib/Tweemo.pm";
+    my $doc = File::Spec->catfile($RealBin, File::Spec->updir(), 'lib', 'Tweemo.pm');
+    system 'perldoc', $doc;
     exit;
 }
 

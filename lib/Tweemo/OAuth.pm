@@ -8,7 +8,7 @@ use Net::Twitter;
 use YAML::Tiny;
 
 sub add_user {
-    my $yamlfile = "$ENV{'HOME'}/.tweemo.yml";
+    my $yamlfile = File::Spec->catfile($ENV{'HOME'}, '.tweemo.yml');
     if (-f $yamlfile) {
         my $yaml = YAML::Tiny->read($yamlfile);
         my $config = $yaml->[0];
