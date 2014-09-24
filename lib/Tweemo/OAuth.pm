@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use utf8;
 use 5.010;
+use File::Spec;
 use Moo;
 use Net::Twitter;
 use YAML::Tiny;

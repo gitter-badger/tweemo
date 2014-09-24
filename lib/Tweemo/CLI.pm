@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use utf8;
 use 5.010;
+use File::Spec;
 use FindBin qw($RealBin $RealScript);
 use Getopt::Long;
 use Moo;
