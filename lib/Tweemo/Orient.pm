@@ -37,16 +37,16 @@ sub concat_orient_en {
             my($p, $l) = ($1, $2);
             if ($p =~ $v_regex) {
                 # verb
-                push @os, &get_orient_en($dbh, $l, 'v');
+                push @os, _get_orient_en($dbh, $l, 'v');
             } elsif ($p =~ $n_regex) {
                 # noun
-                push @os, &get_orient_en($dbh, $l, 'n');
+                push @os, _get_orient_en($dbh, $l, 'n');
             } elsif ($p =~ $a_regex) {
                 # adjective
-                push @os, &get_orient_en($dbh, $l, 'a');
+                push @os, _get_orient_en($dbh, $l, 'a');
             } elsif ($p =~ $r_regex) {
                 # adverb
-                push @os, &get_orient_en($dbh, $l, 'r');
+                push @os, _get_orient_en($dbh, $l, 'r');
             }
         }
     }
@@ -58,16 +58,16 @@ sub concat_orient_en {
     $msg .= " ($val)";
 
     return $msg;
+}
 
-    sub get_orient_en {
-        my($dbh, $w, $p) = @_;
-        my $sth = $dbh->prepare("SELECT orient FROM dictionary WHERE word=? AND pos=?;");
-        $sth->execute($w, $p);
-        while (my $hr = $sth->fetchrow_arrayref) {
-            return $hr->[0] + 0;
-        }
-        return 0;
+sub _get_orient_en {
+    my($dbh, $w, $p) = @_;
+    my $sth = $dbh->prepare("SELECT orient FROM dictionary WHERE word=? AND pos=?;");
+    $sth->execute($w, $p);
+    while (my $hr = $sth->fetchrow_arrayref) {
+        return $hr->[0] + 0;
     }
+    return 0;
 }
 
 sub concat_orient_ja {
@@ -94,19 +94,19 @@ sub concat_orient_ja {
             $r = decode('UTF-8', $r);
             if ($p =~ $v_regex) {
                 # verb
-                push @os, &get_orient_ja($dbh, $w, $r, '動詞');
+                push @os, _get_orient_ja($dbh, $w, $r, '動詞');
             } elsif ($p =~ $n_regex) {
                 # noun
-                push @os, &get_orient_ja($dbh, $w, $r, '名詞');
+                push @os, _get_orient_ja($dbh, $w, $r, '名詞');
             } elsif ($p =~ $a_regex) {
                 # adjective
-                push @os, &get_orient_ja($dbh, $w, $r, '形容詞');
+                push @os, _get_orient_ja($dbh, $w, $r, '形容詞');
             } elsif ($p =~ $r_regex) {
                 # adverb
-                push @os, &get_orient_ja($dbh, $w, $r, '副詞');
+                push @os, _get_orient_ja($dbh, $w, $r, '副詞');
             } elsif ($p =~ $av_regex) {
                 # auxiliary verb
-                push @os, &get_orient_ja($dbh, $w, $r, '助動詞');
+                push @os, _get_orient_ja($dbh, $w, $r, '助動詞');
             }
         }
     }
@@ -118,16 +118,16 @@ sub concat_orient_ja {
     $msg .= " ($val)";
 
     return $msg;
+}
 
-    sub get_orient_ja {
-        my($dbh, $w, $r, $p) = @_;
-        my $sth = $dbh->prepare("SELECT orient FROM dictionary WHERE word=? AND reading=? AND pos=?;");
-        $sth->execute($w, $r, $p);
-        while (my $hr = $sth->fetchrow_arrayref) {
-            return $hr->[0] + 0;
-        }
-        return 0;
+sub _get_orient_ja {
+    my($dbh, $w, $r, $p) = @_;
+    my $sth = $dbh->prepare("SELECT orient FROM dictionary WHERE word=? AND reading=? AND pos=?;");
+    $sth->execute($w, $r, $p);
+    while (my $hr = $sth->fetchrow_arrayref) {
+        return $hr->[0] + 0;
     }
+    return 0;
 }
 
 1;

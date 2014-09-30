@@ -21,7 +21,7 @@ sub add_user {
             ssl             => 1,
         );
         say "open ", $nt->get_authorization_url;
-        open_default_browser($nt->get_authorization_url);
+        _open_default_browser($nt->get_authorization_url);
         print "input PIN Number: ";
         my $pin = <STDIN>;
         chomp $pin;
@@ -29,7 +29,7 @@ sub add_user {
         my($token, $token_secret, $user_id, $screen_name)
             = $nt->request_access_token(verifier => $pin);
         die "'$screen_name' has already registered!\n"
-            if &is_dup_account($config, $user_id);
+            if _is_dup_account($config, $user_id);
         say "Welcome, ${screen_name}!";
 
         $config->{users}->{$screen_name} = {
@@ -51,7 +51,7 @@ sub add_user {
             ssl             => 1,
         );
         say "open ", $nt->get_authorization_url;
-        open_default_browser($nt->get_authorization_url);
+        _open_default_browser($nt->get_authorization_url);
         print "input PIN Number: ";
         my $pin = <STDIN>;
         chomp $pin;
@@ -70,35 +70,34 @@ sub add_user {
         $yaml->write($yamlfile);
         chmod 0600, $yamlfile or die "cannot change permission '$yamlfile'";
     }
-    
     return 0;
+}
 
-    sub is_dup_account {
-        my($c, $id) = @_;
-        for (keys $c->{users}) {
-            return 1 if $c->{users}->{$_}->{id} == $id;
-        }
-        return 0;
+sub _is_dup_account {
+    my($c, $id) = @_;
+    for (keys $c->{users}) {
+        return 1 if $c->{users}->{$_}->{id} == $id;
+    }
+    return 0;
+}
+
+sub _open_default_browser {
+    my $url = shift;
+    my $os  = $^O;
+
+    my $cmd;
+    if ($os eq 'darwin') {
+        $cmd = "open '$url'";
+    } elsif ($os eq 'linux') {
+        $cmd = "x-www-browser '$url'";
+    } elsif ($os eq 'MSWin32') {
+        $cmd = "start '$url'";
     }
 
-    sub open_default_browser {
-        my $url = shift;
-        my $os  = $^O;
-
-        my $cmd;
-        if ($os eq 'darwin') {
-            $cmd = "open '$url'";
-        } elsif ($os eq 'linux') {
-            $cmd = "x-www-browser '$url'";
-        } elsif ($os eq 'MSWin32') {
-            $cmd = "start '$url'";
-        }
-
-        if (defined $cmd) {
-            system $cmd;
-        } else {
-            warn 'cannot locate default browser';
-        }
+    if (defined $cmd) {
+        system $cmd;
+    } else {
+        warn 'cannot locate default browser';
     }
 }
 
