@@ -20,7 +20,6 @@ sub run {
 
     my($en, $user);
     my $p = Getopt::Long::Parser->new(
-        #config => [ 'no_ignore_case', 'pass_through' ],
         config => [ 'no_ignore_case' ],
     );
     $p->getoptionsfromarray(
@@ -33,7 +32,7 @@ sub run {
     ) or die "error: Invalid options\n";
 
     my $cmd = !@args ? 'add_user' :
-               $en   ? 'post_en' : 'post_ja';
+               $en   ? 'post_en'  : 'post_ja';
     my $call = $self->can("cmd_$cmd") or die;
     $self->$call($user, @args);
 
@@ -60,7 +59,8 @@ sub cmd_man {
     my $self = shift;
     my $p = $RealBin;
        $p =~ s/(.+)\/.+/$1/;
-    my $doc = File::Spec->catfile($RealBin, File::Spec->updir(), 'lib', 'Tweemo.pm');
+    my $doc = File::Spec->catfile($RealBin, File::Spec->updir(), 'lib',
+                                  'Tweemo.pm');
     system 'perldoc', $doc;
     exit;
 }
