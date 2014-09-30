@@ -25,12 +25,11 @@ sub concat_orient_en {
     my $r_regex = qr/^(RB|RBR|RBS)$/;
 
     my $db = File::Spec->catfile($RealBin, File::Spec->updir, 'db', 'pn_en.dic.db');
-    my $dbh = DBI->connect("dbi:SQLite:dbname=$db", undef, undef, 
-        {AutoCommit => 0, RaiseError => 1 });
+    my $dbh = DBI->connect("dbi:SQLite:dbname=$db", undef, undef,
+                           {AutoCommit => 0, RaiseError => 1 });
     $dbh->{sqlite_unicode} = 1;
 
-    my $s = $msg;
-       $s =~ s/"/\\"/g;
+    (my $s = $msg) =~ s/"/\\"/g;
     my @res = split(/\n/, `echo "$s" |$treetagger 2>/dev/null`);
     my @os = ();
     for (@res) {
@@ -80,12 +79,11 @@ sub concat_orient_ja {
         = (qr/^動詞$/, qr/^名詞$/, qr/^形容詞$/, qr/^副詞$/, qr/^助動詞$/);
 
     my $db = File::Spec->catfile($RealBin, File::Spec->updir, 'db', 'pn_ja.dic.db');
-    my $dbh = DBI->connect("dbi:SQLite:dbname=$db", undef, undef, 
-        {AutoCommit => 0, RaiseError => 1 });
+    my $dbh = DBI->connect("dbi:SQLite:dbname=$db", undef, undef,
+                           {AutoCommit => 0, RaiseError => 1 });
     $dbh->{sqlite_unicode} = 1;
 
-    my $s = $msg;
-       $s =~ s/"/\\"/g;
+    (my $s = $msg) =~ s/"/\\"/g;
     my @res = split(/\n/, `echo "$s" |mecab`);
     my @os = ();
     for (@res) {

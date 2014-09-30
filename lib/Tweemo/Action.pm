@@ -22,12 +22,12 @@ sub post {
 
     my $du = defined $user ? $user : $config->{default_user};
     my $nt = Net::Twitter->new(
-        traits => ['API::RESTv1_1'],
+        traits              => ['API::RESTv1_1'],
         consumer_key        => $config->{consumer_key},
         consumer_secret     => $config->{consumer_secret},
         access_token        => $config->{users}->{$du}->{access_token},
         access_token_secret => $config->{users}->{$du}->{access_secret},
-        ssl => 1,
+        ssl                 => 1,
     );
     $nt->update($tweet);
 }
