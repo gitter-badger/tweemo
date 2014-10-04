@@ -18,22 +18,31 @@ use constant { SUCCESS => 0, INFO => 1, WARN => 2, ERROR => 3 };
 sub run {
     my($self, @args) = @_;
 
-    my($en, $user);
+    my($tl, $en, $user);
     my $p = Getopt::Long::Parser->new(
         config => [ 'no_ignore_case' ],
     );
     $p->getoptionsfromarray(
         \@args,
-        'help|?'     => sub { $self->cmd_help;    exit },
-        'man'        => sub { $self->cmd_man;     exit },
-        'version'    => sub { $self->cmd_version; exit },
-        'en|english' => \$en,
-        'user=s'     => \$user,
+        'help|?'      => sub { $self->cmd_help;    exit },
+        'man'         => sub { $self->cmd_man;     exit },
+        'version'     => sub { $self->cmd_version; exit },
+        'tl|timeline' => \$tl,
+        'en|english'  => \$en,
+        'user=s'      => \$user,
     ) or die "error: Invalid options\n";
 
-    my $cmd = !@args ? 'add_user' :
-               $en   ? 'post_en'  : 'post_ja';
-    my $call = $self->can("cmd_$cmd") or die;
+    my $cmd;
+    if ($tl) {
+        $cmd = 'get_home_timeline';
+    } elsif (!@args) {
+        $cmd = 'add_user';
+    } else {
+        $cmd = $en ? 'post_en' : 'post_ja';
+    }
+
+    my $call = $self->can("cmd_$cmd")
+        or die "error: Invalid option commands";
     $self->$call($user, @args);
 
     return 0;
@@ -52,6 +61,7 @@ usage: $RealScript 'tweet message'
 options:
  --user    set user
  --en      english tweet
+ --tl      show the 20 most recent tweets
 HELP
 }
 
@@ -73,6 +83,13 @@ sub print {
 sub cmd_version {
     my $self = shift;
     $self->print("$RealScript $Tweemo::VERSION\n");
+}
+
+sub cmd_get_home_timeline {
+    my($self, @args) = @_;
+    my $user = shift @args;
+
+    Tweemo::Action->get_home_timeline($user);
 }
 
 sub cmd_add_user {

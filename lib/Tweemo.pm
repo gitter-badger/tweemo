@@ -17,6 +17,7 @@ tweemo - Perl emotional twitter client
   > tweemo              'default account's japanese tweet'
   > tweemo --user=user2 "user2 account's tweet"
   > tweemo --en         'english tweet'
+  > tweemo --tl         'show the 20 most recent tweets'
 
 =head1 DESCRIPTION
 

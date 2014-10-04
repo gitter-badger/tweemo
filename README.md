@@ -24,6 +24,8 @@ $ tweemo '今日も一日がんばるぞい！'
 $ tweemo --user=user2 'もうこんな仕事辞めたいぞい…'
 # Englis tweet
 $ tweemo --en "Oh god, it's a bikeshed discussion."
+# TLの最新20件を取得
+$ tweemo --tl
 ```
 
 ## Install

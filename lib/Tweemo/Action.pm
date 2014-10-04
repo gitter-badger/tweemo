@@ -12,6 +12,34 @@ use YAML::Tiny;
 binmode STDOUT, ':utf8';
 binmode STDERR, ':utf8';
 
+sub get_home_timeline {
+    my($self, @args) = @_;
+    my $user = shift @args;
+
+    my $yamlfile = File::Spec->catfile($ENV{'HOME'}, '.tweemo.yml');
+    my $yaml = YAML::Tiny->read($yamlfile);
+    my $config = $yaml->[0];
+
+    my $du = defined $user ? $user : $config->{default_user};
+    my $nt = Net::Twitter->new(
+        traits              => ['API::RESTv1_1'],
+        consumer_key        => $config->{consumer_key},
+        consumer_secret     => $config->{consumer_secret},
+        access_token        => $config->{users}->{$du}->{access_token},
+        access_token_secret => $config->{users}->{$du}->{access_secret},
+        ssl                 => 1,
+    );
+    my $ar = $nt->home_timeline;
+    for my $s (reverse @$ar) {
+        my $ca  = $s->{created_at};
+        my $us  = '@' . $s->{user}{screen_name};
+        my $url = "http://twitter.com/$s->{user}{screen_name}/status/$s->{id}";
+        my $src = $s->{source};
+        say "[$ca] $us $url $src";
+        say "$s->{text}"
+    }
+}
+
 sub post {
     my($self, @args) = @_;
     my $user = shift @args;
