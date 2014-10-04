@@ -9,6 +9,9 @@ use Moo;
 use Net::Twitter;
 use YAML::Tiny;
 
+binmode STDOUT, ':utf8';
+binmode STDERR, ':utf8';
+
 sub post {
     my($self, @args) = @_;
     my $user = shift @args;
@@ -29,7 +32,11 @@ sub post {
         access_token_secret => $config->{users}->{$du}->{access_secret},
         ssl                 => 1,
     );
-    $nt->update($tweet);
+    my @ss = $nt->update($tweet);
+    for my $s (@ss) {
+        say "Posted: $s->{text}";
+        say "http://twitter.com/$s->{user}{screen_name}/status/$s->{id}";
+    }
 }
 
 1;
