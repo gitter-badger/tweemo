@@ -20,11 +20,11 @@ tweemo
 ```
 # アカウント登録，追加
 $ tweemo --add
-# デフォルトアカウント
+# デフォルトアカウントでつぶやく
 $ tweemo '今日も一日がんばるぞい！'
-# 登録済みアカウント user2
+# 登録済みアカウント user2 でつぶやく
 $ tweemo --user=user2 'もうこんな仕事辞めたいぞい…'
-# Englis tweet
+# tweet in English
 $ tweemo --en "Oh god, it's a bikeshed discussion."
 # デフォルトアカウントのTL最新20件を取得
 # 引数，オプションなしは --tl と同じ
