@@ -14,6 +14,7 @@ tweemo - Perl emotional twitter client
 
 =head1 SYNOPSIS
 
+  > tweemo --add  # add twitter account
   > tweemo              'default account's japanese tweet'
   > tweemo --user=user2 "user2 account's tweet"
   > tweemo --en         'english tweet'
