@@ -18,7 +18,7 @@ use constant { SUCCESS => 0, INFO => 1, WARN => 2, ERROR => 3 };
 sub run {
     my($self, @args) = @_;
 
-    my($tl, $en, $user);
+    my($add, $tl, $en, $user);
     my $p = Getopt::Long::Parser->new(
         config => [ 'no_ignore_case' ],
     );
@@ -27,16 +27,17 @@ sub run {
         'help|?'      => sub { $self->cmd_help;    exit },
         'man'         => sub { $self->cmd_man;     exit },
         'version'     => sub { $self->cmd_version; exit },
+        'add'         => \$add,
         'tl|timeline' => \$tl,
         'en|english'  => \$en,
         'user=s'      => \$user,
     ) or die "error: Invalid options\n";
 
     my $cmd;
-    if ($tl) {
-        $cmd = 'get_home_timeline';
-    } elsif (!@args) {
+    if ($add) {
         $cmd = 'add_user';
+    } elsif ($tl || !@args) {
+        $cmd = 'get_home_timeline';
     } else {
         $cmd = $en ? 'post_en' : 'post_ja';
     }
@@ -60,6 +61,7 @@ usage: $RealScript 'tweet message'
 
 options:
  --user    set user
+ --add     add user
  --en      english tweet
  --tl      show the 20 most recent tweets
 HELP

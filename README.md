@@ -24,8 +24,13 @@ $ tweemo '今日も一日がんばるぞい！'
 $ tweemo --user=user2 'もうこんな仕事辞めたいぞい…'
 # Englis tweet
 $ tweemo --en "Oh god, it's a bikeshed discussion."
-# TLの最新20件を取得
+# デフォルトアカウントのTL最新20件を取得
+# 引数，オプションなしは --tl と同じ
 $ tweemo --tl
+# アカウント user2 のTL最新20件を取得
+$ tweemo --user=user2
+# アカウント追加
+$ tweemo --add
 ```
 
 ## Install
@@ -37,7 +42,7 @@ $ git clone git@github.com:suruga/tweemo.git
 ```                              
 英語つぶやきをしたい場合のみ，TreeTaggerをインストール後，PATHにtreetagger/{bin,cmd}を追加しておく．
 
-* 引数なしで実行すると，アカウント登録を行う．
+* --add オプションで実行するとアカウント登録を行う．
     * Twitter認証ページへ促され，そこで認証．端末へ戻りPINを入力すれば ~/.tweemo.yml が更新される．
 * 複数アカウント対応．デフォルトは最初に登録したアカウント．
     * デフォルトアカウントは .tweemo.yml の default_user: のユーザ名を直接書き換えることで変更可能．
