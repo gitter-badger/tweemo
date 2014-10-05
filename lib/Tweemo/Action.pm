@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use utf8;
 use 5.010;
+use Time::Piece;
 use Encode qw(decode);
 use File::Spec;
 use Moo;
@@ -32,10 +33,11 @@ sub get_home_timeline {
     my $ar = $nt->home_timeline;
     for my $s (reverse @$ar) {
         my $ca  = $s->{created_at};
+        my $tp  = localtime Time::Piece->strptime($ca, "%a %b %d %T %z %Y")->epoch;
         my $us  = '@' . $s->{user}{screen_name};
         my $url = "http://twitter.com/$s->{user}{screen_name}/status/$s->{id}";
         my $src = $s->{source};
-        say "[$ca] $us $url $src";
+        say '[', $tp->mon, '/', $tp->mday, ' ', $tp->wdayname, ']', ' (', $tp->hms, ') ', "$us $url $src";
         say "$s->{text}"
     }
 }
