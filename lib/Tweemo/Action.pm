@@ -6,8 +6,10 @@ use 5.010;
 use Time::Piece;
 use Encode qw(decode);
 use File::Spec;
+use List::Util qw(sum0);
 use Moo;
 use Net::Twitter;
+use Term::ANSIColor qw(:constants);
 use YAML::Tiny;
 
 binmode STDOUT, ':utf8';
@@ -37,8 +39,10 @@ sub get_home_timeline {
         my $us  = '@' . $s->{user}{screen_name};
         my $url = "http://twitter.com/$s->{user}{screen_name}/status/$s->{id}";
         my $src = $s->{source};
-        say $tp->strftime('[%m/%d '), $tp->wdayname, $tp->strftime('] (%T)'), " $us $url $src";
-        say "$s->{text}"
+        print $tp->strftime('[%m/%d '), $tp->wdayname, $tp->strftime('] (%T) ');
+        _print_color_bold_unsco($us);
+        say " $url $src";
+        say $s->{text};
     }
 }
 
@@ -64,8 +68,31 @@ sub post {
     );
     my @ss = $nt->update($tweet);
     for my $s (@ss) {
-        say "Posted: $s->{text}";
         say "http://twitter.com/$s->{user}{screen_name}/status/$s->{id}";
+        say $s->{text};
+    }
+}
+
+sub _print_color_bold_unsco {
+    my $s  = shift;
+    my $n = sum0 map { ord } split //, $s;
+
+    # can't use array as color variables
+    my @colors = qw(BRIGHT_RED BRIGHT_GREEN BRIGHT_YELLOW BRIGHT_BLUE BRIGHT_MAGENTA BRIGHT_CYAN);
+    my $n_colors = @colors;
+    my $color = @colors[$n % $n_colors];
+    if ($color eq $colors[0]) {
+        print UNDERSCORE, BOLD, BRIGHT_RED, $s, RESET;
+    } elsif ($color eq $colors[1]) {
+        print UNDERSCORE, BOLD, BRIGHT_GREEN, $s, RESET;
+    } elsif ($color eq $colors[2]) {
+        print UNDERSCORE, BOLD, BRIGHT_YELLOW, $s, RESET;
+    } elsif ($color eq $colors[3]) {
+        print UNDERSCORE, BOLD, BRIGHT_BLUE, $s, RESET;
+    } elsif ($color eq $colors[4]) {
+        print UNDERSCORE, BOLD, BRIGHT_MAGENTA, $s, RESET;
+    } elsif ($color eq $colors[5]) {
+        print UNDERSCORE, BOLD, BRIGHT_CYAN, $s, RESET;
     }
 }
 
