@@ -37,7 +37,7 @@ sub get_home_timeline {
         my $us  = '@' . $s->{user}{screen_name};
         my $url = "http://twitter.com/$s->{user}{screen_name}/status/$s->{id}";
         my $src = $s->{source};
-        say '[', $tp->mon, '/', $tp->mday, ' ', $tp->wdayname, ']', ' (', $tp->hms, ') ', "$us $url $src";
+        say $tp->strftime('[%m/%d '), $tp->wdayname, $tp->strftime('] (%T)'), " $us $url $src";
         say "$s->{text}"
     }
 }
