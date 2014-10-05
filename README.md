@@ -18,6 +18,8 @@ tweemo
 ## Usage
 
 ```
+# アカウント登録，追加
+$ tweemo --add
 # デフォルトアカウント
 $ tweemo '今日も一日がんばるぞい！'
 # 登録済みアカウント user2
@@ -29,8 +31,6 @@ $ tweemo --en "Oh god, it's a bikeshed discussion."
 $ tweemo --tl
 # アカウント user2 のTL最新20件を取得
 $ tweemo --user=user2
-# アカウント追加
-$ tweemo --add
 ```
 
 ## Install
