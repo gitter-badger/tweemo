@@ -38,7 +38,7 @@ sub get_home_timeline {
         my $tp  = localtime Time::Piece->strptime($ca, "%a %b %d %T %z %Y")->epoch;
         my $us  = '@' . $s->{user}{screen_name};
         my $url = "http://twitter.com/$s->{user}{screen_name}/status/$s->{id}";
-        my $src = $s->{source};
+        (my $src = $s->{source}) =~ s|<a href="(.+)" rel=".+">(.+)</a>|[$2]($1)|;
         print $tp->strftime('[%m/%d '), $tp->wdayname, $tp->strftime('] (%T) ');
         _print_color_bold_unsco($us);
         say " $url $src";
