@@ -35,6 +35,7 @@ sub concat_orient_en {
     for (@res) {
         if (/^.+$D(.+)$D(.+)$/) {
             my($p, $l) = ($1, $2);
+            $l = "\L$l";    # dictionary containts only lowercase
             if ($p =~ $v_regex) {
                 # verb
                 push @os, _get_orient_en($dbh, $l, 'v');
