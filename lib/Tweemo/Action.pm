@@ -42,7 +42,13 @@ sub get_home_timeline {
         print $tp->strftime('[%m/%d '), $tp->wdayname, $tp->strftime('] (%T) ');
         _print_color_bold_unsco($us);
         say " $url $src";
-        say $s->{text};
+        if ($s->{text} =~ /^(.+)(@\w+)(.+)$/) {
+            print $1;
+            _print_color_bold_unsco($2);
+            say $3;
+        } else {
+            say $s->{text};
+        }
     }
 }
 
