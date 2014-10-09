@@ -49,6 +49,8 @@ sub get_home_timeline {
                 print $1;
                 _print_color_bold_unsco($2);
                 print $3;
+            } elsif (/^(#.+)$/) {
+                print BRIGHT_WHITE, $_, RESET;
             } else {
                 print;
             }
