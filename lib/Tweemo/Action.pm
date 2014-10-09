@@ -45,7 +45,7 @@ sub get_home_timeline {
         my @ss = split(/ /, $s->{text});
         my $i = 0;
         for (@ss) {
-            if (/^(.*)(@\w+)(.*)$/) {
+            if (/^(.*)(@[a-zA-Z0-9_]+)(.*)$/) {
                 print $1;
                 _print_color_bold_unsco($2);
                 print $3;
