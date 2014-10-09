@@ -50,7 +50,7 @@ sub get_home_timeline {
                 _print_color_bold_unsco($2);
                 print $3;
             } elsif (/^(#.+)$/) {
-                print UNDERSCORE, BOLD, BRIGHT_WHITE, $_, RESET;
+                print UNDERSCORE, BRIGHT_WHITE, $_, RESET;
             } else {
                 print;
             }
