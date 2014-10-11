@@ -18,7 +18,7 @@ use constant { SUCCESS => 0, INFO => 1, WARN => 2, ERROR => 3 };
 sub run {
     my($self, @args) = @_;
 
-    my($add, $tl, $en, $user);
+    my($add, $en, $st, $tl, $user);
     my $p = Getopt::Long::Parser->new(
         config => [ 'no_ignore_case' ],
     );
@@ -28,6 +28,7 @@ sub run {
         'man'         => sub { $self->cmd_man;     exit },
         'version'     => sub { $self->cmd_version; exit },
         'add'         => \$add,
+        'st|stream'   => \$st,
         'tl|timeline' => \$tl,
         'en|english'  => \$en,
         'user=s'      => \$user,
@@ -36,8 +37,10 @@ sub run {
     my $cmd;
     if ($add) {
         $cmd = 'add_user';
-    } elsif ($tl || !@args) {
+    } elsif ($tl) {
         $cmd = 'get_home_timeline';
+    } elsif ($st || !@args) {
+        $cmd = 'user_stream';
     } else {
         $cmd = $en ? 'post_en' : 'post_ja';
     }
@@ -92,6 +95,13 @@ sub cmd_get_home_timeline {
     my $user = shift @args;
 
     Tweemo::Action->get_home_timeline($user);
+}
+
+sub cmd_user_stream {
+    my($self, @args) = @_;
+    my $user = shift @args;
+
+    Tweemo::Action->user_stream($user);
 }
 
 sub cmd_add_user {

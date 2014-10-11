@@ -11,9 +11,9 @@ tweemo
 
 ## Requirement
 
-* [MeCab](https://code.google.com/p/mecab/)（日本語つぶやき時に必要）
-* [TreeTagger](http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/)（英語つぶやき時に必要）
-* perl module ( DBD::SQLite, DBI, Net::Twitter, Statistics::Lite, YAML::Tiny)
+* [MeCab](https://code.google.com/p/mecab/)（日本語つぶやきに必要）
+* [TreeTagger](http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/)（英語つぶやきに必要）
+* perl modules ( AnyEvent::Twitter::Stream, DBD::SQLite, DBI, Net::Twitter, Statistics::Lite, YAML::Tiny )
       
 ## Usage
 
@@ -22,21 +22,24 @@ tweemo
 $ tweemo --add
 # デフォルトアカウントでつぶやく
 $ tweemo '今日も一日がんばるぞい！'
-# 登録済みアカウント user2 でつぶやく
+# 登録済みアカウント user2 で実行
 $ tweemo --user=user2 'もうこんな仕事辞めたいぞい…'
 # tweet in English
 $ tweemo --en "Oh god, it's a bikeshed discussion."
-# デフォルトアカウントのTL最新20件を取得
-# 引数，オプションなしは --tl と同じ
+# TLの最新20件を取得
 $ tweemo --tl
-# アカウント user2 のTL最新20件を取得
-$ tweemo --user=user2
+# User streams
+# 引数，オプションなしは --st と同じ
+$ tweemo --st
 ```
 
 ## Install
 
 ```
+# For Mac OS X.
+# If you use Linux, install those from package manager or source.
 $ brew install mecab mecab-ipadic
+
 $ cpanm DBI DBD::SQLite Net::Twitter Statistics::Lite YAML::Tiny
 $ git clone git@github.com:suruga/tweemo.git
 ```                              

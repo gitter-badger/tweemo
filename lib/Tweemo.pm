@@ -14,11 +14,13 @@ tweemo - Perl emotional twitter client
 
 =head1 SYNOPSIS
 
-  > tweemo --add  # add twitter account
-  > tweemo              'default account's japanese tweet'
-  > tweemo --user=user2 "user2 account's tweet"
-  > tweemo --en         'english tweet'
-  > tweemo --tl         'show the 20 most recent tweets'
+  > tweemo --add                 # add twitter account
+  > tweemo 'text'                # default account's japanese tweet
+  > tweemo --user=user2 'text'   # user2 account's tweet
+  > tweemo --en 'text'           # english tweet
+  > tweemo --tl                  # show the 20 most recent tweets
+  > tweemo --st                  # user streams
+  > tweemo                       # default action is user streams
 
 =head1 DESCRIPTION
 

@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use utf8;
 use 5.010;
+use AnyEvent::Twitter::Stream;
 use Time::Piece;
 use Encode qw(decode);
 use File::Spec;
@@ -59,6 +60,60 @@ sub get_home_timeline {
         }
         say '';
     }
+}
+
+sub user_stream {
+    my($self, @args) = @_;
+    my $user = shift @args;
+
+    my $cv = AE::cv;
+
+    my $yamlfile = File::Spec->catfile($ENV{'HOME'}, '.tweemo.yml');
+    my $yaml = YAML::Tiny->read($yamlfile);
+    my $config = $yaml->[0];
+
+    my $du = defined $user ? $user : $config->{default_user};
+    my $listener = AnyEvent::Twitter::Stream->new(
+        consumer_key    => $config->{consumer_key},
+        consumer_secret => $config->{consumer_secret},
+        token           => $config->{users}->{$du}->{access_token},
+        token_secret    => $config->{users}->{$du}->{access_secret},
+        method          => 'userstream',
+        timeout         => 45,
+        on_tweet        => sub {
+            my $s = shift;
+            return unless defined $s->{user}{screen_name};
+            my $ca  = $s->{created_at};
+            my $tp  = localtime Time::Piece->strptime($ca, "%a %b %d %T %z %Y")->epoch;
+            my $us  = '@' . $s->{user}{screen_name};
+            my $url = "http://twitter.com/$s->{user}{screen_name}/status/$s->{id}";
+            (my $src = $s->{source}) =~ s|<a href="(.+)" rel=".+">(.+)</a>|[$2]($1)|;
+            print $tp->strftime('[%m/%d '), $tp->wdayname, $tp->strftime('] (%T) ');
+            _print_color_bold_unsco($us);
+            say " $url $src";
+            my @ss = split(/ /, $s->{text});
+            my $i = 0;
+            for (@ss) {
+                if (/^(.*)(@[a-zA-Z0-9_]+)(.*)$/) {
+                    print $1;
+                    _print_color_bold_unsco($2);
+                    print $3;
+                } elsif (/^(#.+)$/) {
+                    print UNDERSCORE, BRIGHT_WHITE, $_, RESET;
+                } else {
+                    print;
+                }
+                $i++;
+                print ' ' if $i != @ss;
+            }
+            say '';
+        },
+        on_error        => sub {
+            my $error = shift;
+            die "error: $error";
+        },
+    );
+    $cv->recv;
 }
 
 sub post {
