@@ -43,22 +43,24 @@ sub get_home_timeline {
         print $tp->strftime('[%m/%d '), $tp->wdayname, $tp->strftime('] (%T) ');
         _print_color_bold_unsco($us);
         say " $url $src";
-        my @ss = split(/ /, $s->{text});
-        my $i = 0;
-        for (@ss) {
-            if (/^(.*)(@[a-zA-Z0-9_]+)(.*)$/) {
-                print $1;
-                _print_color_bold_unsco($2);
-                print $3;
-            } elsif (/^(#.+)$/) {
-                print UNDERSCORE, BRIGHT_WHITE, $_, RESET;
-            } else {
-                print;
+        for (split(/\n/, $s->{text})) {
+            my @ss = split / /;
+            my $i = 0;
+            for (@ss) {
+                if (/^(.*)(@[a-zA-Z0-9_]+)(.*)$/) {
+                    print $1;
+                    _print_color_bold_unsco($2);
+                    print $3;
+                } elsif (/^(#.+)$/) {
+                    print UNDERSCORE, BRIGHT_WHITE, $_, RESET;
+                } else {
+                    print;
+                }
+                $i++;
+                print ' ' if $i != @ss;
             }
-            $i++;
-            print ' ' if $i != @ss;
+            say '';
         }
-        say '';
     }
 }
 
@@ -91,22 +93,24 @@ sub user_stream {
             print $tp->strftime('[%m/%d '), $tp->wdayname, $tp->strftime('] (%T) ');
             _print_color_bold_unsco($us);
             say " $url $src";
-            my @ss = split(/ /, $s->{text});
-            my $i = 0;
-            for (@ss) {
-                if (/^(.*)(@[a-zA-Z0-9_]+)(.*)$/) {
-                    print $1;
-                    _print_color_bold_unsco($2);
-                    print $3;
-                } elsif (/^(#.+)$/) {
-                    print UNDERSCORE, BRIGHT_WHITE, $_, RESET;
-                } else {
-                    print;
+            for (split(/\n/, $s->{text})) {
+                my @ss = split / /;
+                my $i = 0;
+                for (@ss) {
+                    if (/^(.*)(@[a-zA-Z0-9_]+)(.*)$/) {
+                        print $1;
+                        _print_color_bold_unsco($2);
+                        print $3;
+                    } elsif (/^(#.+)$/) {
+                        print UNDERSCORE, BRIGHT_WHITE, $_, RESET;
+                    } else {
+                        print;
+                    }
+                    $i++;
+                    print ' ' if $i != @ss;
                 }
-                $i++;
-                print ' ' if $i != @ss;
+                say '';
             }
-            say '';
         },
         on_error        => sub {
             my $error = shift;
