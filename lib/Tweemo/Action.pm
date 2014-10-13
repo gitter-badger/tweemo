@@ -34,33 +34,8 @@ sub get_home_timeline {
         ssl                 => 1,
     );
     my $ar = $nt->home_timeline;
-    for my $s (reverse @$ar) {
-        my $ca  = $s->{created_at};
-        my $tp  = localtime Time::Piece->strptime($ca, "%a %b %d %T %z %Y")->epoch;
-        my $us  = '@' . $s->{user}{screen_name};
-        my $url = "http://twitter.com/$s->{user}{screen_name}/status/$s->{id}";
-        (my $src = $s->{source}) =~ s|<a href="(.+)" rel=".+">(.+)</a>|[$2]($1)|;
-        print $tp->strftime('[%m/%d '), $tp->wdayname, $tp->strftime('] (%T) ');
-        _print_color_bold_unsco($us);
-        say " $url $src";
-        for (split(/\n/, $s->{text})) {
-            my @ss = split / /;
-            my $i = 0;
-            for (@ss) {
-                if (/^(.*)(@[a-zA-Z0-9_]+)(.*)$/) {
-                    print $1;
-                    _print_color_bold_unsco($2);
-                    print $3;
-                } elsif (/^(#.+)$/) {
-                    print UNDERSCORE, BRIGHT_WHITE, $_, RESET;
-                } else {
-                    print;
-                }
-                $i++;
-                print ' ' if $i != @ss;
-            }
-            say '';
-        }
+    for my $tweet (reverse @$ar) {
+        $self->print($tweet);
     }
 }
 
@@ -81,36 +56,11 @@ sub user_stream {
         token           => $config->{users}->{$du}->{access_token},
         token_secret    => $config->{users}->{$du}->{access_secret},
         method          => 'userstream',
-        timeout         => 45,
+        # timeout         => 45,
         on_tweet        => sub {
-            my $s = shift;
-            return unless defined $s->{user}{screen_name};
-            my $ca  = $s->{created_at};
-            my $tp  = localtime Time::Piece->strptime($ca, "%a %b %d %T %z %Y")->epoch;
-            my $us  = '@' . $s->{user}{screen_name};
-            my $url = "http://twitter.com/$s->{user}{screen_name}/status/$s->{id}";
-            (my $src = $s->{source}) =~ s|<a href="(.+)" rel=".+">(.+)</a>|[$2]($1)|;
-            print $tp->strftime('[%m/%d '), $tp->wdayname, $tp->strftime('] (%T) ');
-            _print_color_bold_unsco($us);
-            say " $url $src";
-            for (split(/\n/, $s->{text})) {
-                my @ss = split / /;
-                my $i = 0;
-                for (@ss) {
-                    if (/^(.*)(@[a-zA-Z0-9_]+)(.*)$/) {
-                        print $1;
-                        _print_color_bold_unsco($2);
-                        print $3;
-                    } elsif (/^(#.+)$/) {
-                        print UNDERSCORE, BRIGHT_WHITE, $_, RESET;
-                    } else {
-                        print;
-                    }
-                    $i++;
-                    print ' ' if $i != @ss;
-                }
-                say '';
-            }
+            my $tweet = shift;
+            return unless defined $tweet->{user}{screen_name};
+            $self->print($tweet);
         },
         on_error        => sub {
             my $error = shift;
@@ -118,6 +68,59 @@ sub user_stream {
         },
     );
     $cv->recv;
+}
+
+sub print {
+    my($self, $tweet) = @_;
+    my $ca  = $tweet->{created_at};
+    my $tp  = localtime Time::Piece->strptime($ca, "%a %b %d %T %z %Y")->epoch;
+    my $us  = '@' . $tweet->{user}{screen_name};
+    my $url = "http://twitter.com/$tweet->{user}{screen_name}/status/$tweet->{id}";
+    (my $src = $tweet->{source}) =~ s|<a href="(.+)" rel=".+">(.+)</a>|[$2]($1)|;
+    print $tp->strftime('[%m/%d '), $tp->wdayname, $tp->strftime('] (%T) ');
+    _print_color_bold_unsco($us);
+    say " $url $src";
+    for (split(/\n/, $tweet->{text})) {
+        my @ss = split / /;
+        my $i = 0;
+        for (@ss) {
+            if (/^(.*)(@[a-zA-Z0-9_]+)(.*)$/) {
+                print $1;
+                _print_color_bold_unsco($2);
+                print $3;
+            } elsif (/^(#.+)$/) {
+                print UNDERSCORE, BRIGHT_WHITE, $_, RESET;
+            } else {
+                print;
+            }
+            $i++;
+            print ' ' if $i != @ss;
+        }
+        say '';
+    }
+}
+
+sub _print_color_bold_unsco {
+    my $s  = shift;
+    my $n = sum0 map { ord } split //, $s;
+
+    # can't use array as color variables
+    my @colors = qw(BRIGHT_RED BRIGHT_GREEN BRIGHT_YELLOW BRIGHT_BLUE BRIGHT_MAGENTA BRIGHT_CYAN);
+    my $n_colors = @colors;
+    my $color = @colors[$n % $n_colors];
+    if ($color eq $colors[0]) {
+        print UNDERSCORE, BOLD, BRIGHT_RED, $s, RESET;
+    } elsif ($color eq $colors[1]) {
+        print UNDERSCORE, BOLD, BRIGHT_GREEN, $s, RESET;
+    } elsif ($color eq $colors[2]) {
+        print UNDERSCORE, BOLD, BRIGHT_YELLOW, $s, RESET;
+    } elsif ($color eq $colors[3]) {
+        print UNDERSCORE, BOLD, BRIGHT_BLUE, $s, RESET;
+    } elsif ($color eq $colors[4]) {
+        print UNDERSCORE, BOLD, BRIGHT_MAGENTA, $s, RESET;
+    } elsif ($color eq $colors[5]) {
+        print UNDERSCORE, BOLD, BRIGHT_CYAN, $s, RESET;
+    }
 }
 
 sub post {
@@ -144,29 +147,6 @@ sub post {
     for my $s (@ss) {
         say "http://twitter.com/$s->{user}{screen_name}/status/$s->{id}";
         say $s->{text};
-    }
-}
-
-sub _print_color_bold_unsco {
-    my $s  = shift;
-    my $n = sum0 map { ord } split //, $s;
-
-    # can't use array as color variables
-    my @colors = qw(BRIGHT_RED BRIGHT_GREEN BRIGHT_YELLOW BRIGHT_BLUE BRIGHT_MAGENTA BRIGHT_CYAN);
-    my $n_colors = @colors;
-    my $color = @colors[$n % $n_colors];
-    if ($color eq $colors[0]) {
-        print UNDERSCORE, BOLD, BRIGHT_RED, $s, RESET;
-    } elsif ($color eq $colors[1]) {
-        print UNDERSCORE, BOLD, BRIGHT_GREEN, $s, RESET;
-    } elsif ($color eq $colors[2]) {
-        print UNDERSCORE, BOLD, BRIGHT_YELLOW, $s, RESET;
-    } elsif ($color eq $colors[3]) {
-        print UNDERSCORE, BOLD, BRIGHT_BLUE, $s, RESET;
-    } elsif ($color eq $colors[4]) {
-        print UNDERSCORE, BOLD, BRIGHT_MAGENTA, $s, RESET;
-    } elsif ($color eq $colors[5]) {
-        print UNDERSCORE, BOLD, BRIGHT_CYAN, $s, RESET;
     }
 }
 
