@@ -56,7 +56,6 @@ sub user_stream {
         token           => $config->{users}->{$du}->{access_token},
         token_secret    => $config->{users}->{$du}->{access_secret},
         method          => 'userstream',
-        # timeout         => 45,
         on_tweet        => sub {
             my $tweet = shift;
             return unless defined $tweet->{user}{screen_name};
