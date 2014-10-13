@@ -2,7 +2,7 @@ tweemo
 ====
 
 つぶやく -> 平均感情値が出る -> 楽しい
-           
+
 ## Description
 
 * 感情は品詞（動詞，名詞，形容詞，副詞，助動詞）に -1 から 1 までの値を割り振り，その平均を出す（辞書にない場合は 0 とする）．
@@ -14,7 +14,7 @@ tweemo
 * [MeCab](https://code.google.com/p/mecab/)（日本語つぶやきに必要）
 * [TreeTagger](http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/)（英語つぶやきに必要）
 * perl modules ( AnyEvent::Twitter::Stream, DBD::SQLite, DBI, Net::Twitter, Statistics::Lite, YAML::Tiny )
-      
+
 ## Usage
 
 ```
@@ -42,7 +42,7 @@ $ brew install mecab mecab-ipadic
 
 $ cpanm DBI DBD::SQLite Net::Twitter Statistics::Lite YAML::Tiny
 $ git clone git@github.com:suruga/tweemo.git
-```                              
+```
 英語つぶやきをしたい場合のみ，TreeTaggerをインストール後，PATHにtreetagger/{bin,cmd}を追加しておく．
 
 * --add オプションで実行するとアカウント登録を行う．
@@ -56,7 +56,7 @@ $ git clone git@github.com:suruga/tweemo.git
 
 ## Licence
 
-"THE COFFEE-WARE LICENSE" (Revision 15):  
-<suruga179f@gmail.com> wrote this files.  As long as you retain this notice  
-you can do whatever you want with this stuff. If we meet some day, and you  
+"THE COFFEE-WARE LICENSE" (Revision 15):
+<suruga179f@gmail.com> wrote this files.  As long as you retain this notice
+you can do whatever you want with this stuff. If we meet some day, and you
 think this stuff is worth it, you can buy me a coffee in return.
