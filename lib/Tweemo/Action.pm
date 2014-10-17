@@ -69,6 +69,30 @@ sub user_stream {
     $cv->recv;
 }
 
+sub get_user_timeline {
+    my($self, @args) = @_;
+    my($user, $user_screen_name) = @args;
+    $user_screen_name =~ s/^@//;
+
+    my $yamlfile = File::Spec->catfile($ENV{'HOME'}, '.tweemo.yml');
+    my $yaml = YAML::Tiny->read($yamlfile);
+    my $config = $yaml->[0];
+
+    my $du = defined $user ? $user : $config->{default_user};
+    my $nt = Net::Twitter->new(
+        traits              => ['API::RESTv1_1'],
+        consumer_key        => $config->{consumer_key},
+        consumer_secret     => $config->{consumer_secret},
+        access_token        => $config->{users}->{$du}->{access_token},
+        access_token_secret => $config->{users}->{$du}->{access_secret},
+        ssl                 => 1,
+    );
+    my $ar = $nt->user_timeline({screen_name => $user_screen_name});
+    for my $tweet (reverse @$ar) {
+        $self->print($tweet);
+    }
+}
+
 sub print {
     my($self, $tweet) = @_;
     my $ca  = $tweet->{created_at};

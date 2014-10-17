@@ -31,6 +31,8 @@ $ tweemo --tl
 # User streams
 # 引数，オプションなしは --st と同じ
 $ tweemo --st
+# @user のつぶやき最新20件を取得
+$ tweemo @user
 ```
 
 ## Install

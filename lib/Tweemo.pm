@@ -21,6 +21,7 @@ tweemo - Perl emotional twitter client
   > tweemo --tl                  # show the 20 most recent tweets
   > tweemo --st                  # user streams
   > tweemo                       # default action is user streams
+  > tweemo @user                 # show the 20 most recent @user's tweets
 
 =head1 DESCRIPTION
 

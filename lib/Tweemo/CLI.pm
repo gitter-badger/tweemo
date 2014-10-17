@@ -41,6 +41,8 @@ sub run {
         $cmd = 'get_home_timeline';
     } elsif ($st || !@args) {
         $cmd = 'user_stream';
+    } elsif (_is_user_screen_name(@args)) {
+        $cmd = 'get_user_timeline';
     } else {
         $cmd = $en ? 'post_en' : 'post_ja';
     }
@@ -104,6 +106,11 @@ sub cmd_user_stream {
     Tweemo::Action->user_stream($user);
 }
 
+sub cmd_get_user_timeline {
+    my($self, @args) = @_;
+    Tweemo::Action->get_user_timeline(@args);
+}
+
 sub cmd_add_user {
     Tweemo::OAuth->add_user;
 }
@@ -122,6 +129,14 @@ sub cmd_post_ja {
 
     my $tweet = Tweemo::Orient->concat_orient_ja(@args);
     Tweemo::Action->post($user, $tweet);
+}
+
+sub _is_user_screen_name {
+    my @as = @_;
+    for (@as) {
+        return 1 if /^@[a-zA-Z0-9_]+$/;
+    }
+    return 0;
 }
 
 1;
