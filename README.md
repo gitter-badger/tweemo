@@ -13,7 +13,7 @@ tweemo
 
 * [MeCab](https://code.google.com/p/mecab/)（日本語つぶやきに必要）
 * [TreeTagger](http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/)（英語つぶやきに必要）
-* perl modules ( AnyEvent::Twitter::Stream, DBD::SQLite, DBI, Net::Twitter, Statistics::Lite, YAML::Tiny )
+* perl modules ( AnyEvent::Twitter::Stream, DBD::SQLite, DBI, Moo, Net::Twitter, Statistics::Lite, YAML::Tiny )
 
 ## Usage
 

@@ -75,7 +75,7 @@ sub add_user {
 
 sub _is_dup_account {
     my($c, $id) = @_;
-    for (keys $c->{users}) {
+    for (keys %{$c->{users}}) {
         return 1 if $c->{users}->{$_}->{id} == $id;
     }
     return 0;
@@ -83,14 +83,13 @@ sub _is_dup_account {
 
 sub _open_default_browser {
     my $url = shift;
-    my $os  = $^O;
 
     my $cmd;
-    if ($os eq 'darwin') {
+    if ($^O eq 'darwin') {
         $cmd = "open '$url'";
-    } elsif ($os eq 'linux') {
-        $cmd = "x-www-browser '$url'";
-    } elsif ($os eq 'MSWin32') {
+    } elsif ($^O eq 'linux') {
+        $cmd = "xdg-open '$url'";
+    } elsif ($^O eq 'MSWin32') {
         $cmd = "start '$url'";
     }
 
