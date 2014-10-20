@@ -88,7 +88,7 @@ sub _open_default_browser {
     if ($^O eq 'darwin') {
         $cmd = "open '$url'";
     } elsif ($^O eq 'linux') {
-        $cmd = "xdg-open '$url'";
+        $cmd = "xdg-open '$url' 2>/dev/null";
     } elsif ($^O eq 'MSWin32') {
         $cmd = "start '$url'";
     }
