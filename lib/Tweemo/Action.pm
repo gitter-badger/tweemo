@@ -107,6 +107,9 @@ sub print {
         my @ss = split / /;
         my $i = 0;
         for (@ss) {
+            s/\&gt;/>/g;
+            s/\&lt;/</g;
+            s/\&amp;/&/g;
             if (/^(.*)(@[a-zA-Z0-9_]+)(.*)$/) {
                 print $1;
                 _print_color_bold_unsco($2);
@@ -169,6 +172,9 @@ sub post {
     my @ss = $nt->update($tweet);
     for my $s (@ss) {
         say "http://twitter.com/$s->{user}{screen_name}/status/$s->{id}";
+        $s->{text} =~ s/\&gt;/>/g;
+        $s->{text} =~ s/\&lt;/</g;
+        $s->{text} =~ s/\&amp;/&/g;
         say $s->{text};
     }
 }
