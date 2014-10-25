@@ -15,19 +15,22 @@ use Tweemo::Orient;
 
 use constant { SUCCESS => 0, INFO => 1, WARN => 2, ERROR => 3 };
 
+binmode STDOUT, ':utf8';
+binmode STDERR, ':utf8';
+
 sub run {
     my($self, @args) = @_;
 
-    my($add, $en, $img, $st, $tl, $user);
+    my($en, $img, $st, $tl, $user);
     my $p = Getopt::Long::Parser->new(
         config => [ 'no_ignore_case' ],
     );
     $p->getoptionsfromarray(
         \@args,
-        'help|?'      => sub { $self->cmd_help;    exit },
-        'man'         => sub { $self->cmd_man;     exit },
-        'version'     => sub { $self->cmd_version; exit },
-        'add'         => \$add,
+        'help|?'      => sub { $self->cmd_help;     exit },
+        'man'         => sub { $self->cmd_man;      exit },
+        'version'     => sub { $self->cmd_version;  exit },
+        'add'         => sub { $self->cmd_add_user; exit },
         'st|stream'   => \$st,
         'tl|timeline' => \$tl,
         'img=s'       => \$img,
@@ -35,27 +38,16 @@ sub run {
         'user=s'      => \$user,
     ) or die "error: Invalid options\n";
 
-    my $cmd;
-    if ($add) {
-        $cmd = 'add_user';
-    } elsif ($tl) {
-        $cmd = 'get_home_timeline';
+    if ($tl) {
+        $self->cmd_get_home_timeline($user);
     } elsif ($img) {
-        $cmd = 'post_with_media';
+        $self->cmd_post_with_media($user, $en, $img, @args);
     } elsif ($st || !@args) {
-        $cmd = 'user_stream';
+        $self->cmd_user_stream($user);
     } elsif (_is_user_screen_name(@args)) {
-        $cmd = 'get_user_timeline';
+        $self->cmd_get_user_timeline($user, @args);
     } else {
-        $cmd = $en ? 'post_en' : 'post_ja';
-    }
-
-    my $call = $self->can("cmd_$cmd")
-        or die "error: Invalid option commands";
-    if ($cmd eq 'post_with_media') {
-        $self->cmd_post_with_media($user, $img, @args);
-    } else {
-        $self->$call($user, @args);
+        $self->cmd_post($user, $en, @args);
     }
 
     return 0;
@@ -125,30 +117,26 @@ sub cmd_add_user {
     Tweemo::OAuth->add_user;
 }
 
-sub cmd_post_en {
+sub cmd_post {
     my($self, @args) = @_;
     my $user = shift @args;
+    my $en   = shift @args;
 
-    my $tweet = Tweemo::Orient->concat_orient_en(@args);
-    Tweemo::Action->post($user, $tweet);
-}
-
-sub cmd_post_ja {
-    my($self, @args) = @_;
-    my $user = shift @args;
-
-    my $tweet = Tweemo::Orient->concat_orient_ja(@args);
+    my $tweet = $en ? Tweemo::Orient->concat_orient_en(@args)
+                    : Tweemo::Orient->concat_orient_ja(@args);
     Tweemo::Action->post($user, $tweet);
 }
 
 sub cmd_post_with_media {
     my($self, @args) = @_;
     my $user = shift @args;
+    my $en   = shift @args;
     my $img  = shift @args;
-    my $text = shift @args;
 
-    $text = defined $text ? Tweemo::Orient->concat_orient_ja($text) : '';
-    Tweemo::Action->post_with_media($user, $img, $text);
+    my $tweet = !@args ? '' :
+                $en ? Tweemo::Orient->concat_orient_en(@args)
+                    : Tweemo::Orient->concat_orient_ja(@args);
+    Tweemo::Action->post_with_media($user, $img, $tweet);
 }
 
 sub _is_user_screen_name {
