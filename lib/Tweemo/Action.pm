@@ -160,7 +160,7 @@ sub post {
     my $user = shift @args;
 
     my $tweet = shift @args or die "error: no args";
-       $tweet = decode('UTF-8', $tweet);
+    $tweet = decode('UTF-8', $tweet);
 
     my $yamlfile = File::Spec->catfile($ENV{'HOME'}, '.tweemo.yml');
     my $yaml = YAML::Tiny->read($yamlfile);
@@ -176,6 +176,35 @@ sub post {
         ssl                 => 1,
     );
     my @ss = $nt->update($tweet);
+    for my $s (@ss) {
+        say "http://twitter.com/$s->{user}{screen_name}/status/$s->{id}";
+        $s->{text} = _entities_to_symbols($s->{text});
+        say $s->{text};
+    }
+}
+
+sub post_with_media {
+    my($self, @args) = @_;
+    my $user = shift @args;
+    my $img  = shift @args;
+
+    my $tweet = shift @args;
+    $tweet = defined $tweet ? decode('UTF-8', $tweet) : '';
+
+    my $yamlfile = File::Spec->catfile($ENV{'HOME'}, '.tweemo.yml');
+    my $yaml = YAML::Tiny->read($yamlfile);
+    my $config = $yaml->[0];
+
+    my $du = defined $user ? $user : $config->{default_user};
+    my $nt = Net::Twitter->new(
+        traits              => ['API::RESTv1_1'],
+        consumer_key        => $config->{consumer_key},
+        consumer_secret     => $config->{consumer_secret},
+        access_token        => $config->{users}->{$du}->{access_token},
+        access_token_secret => $config->{users}->{$du}->{access_secret},
+        ssl                 => 1,
+    );
+    my @ss = $nt->update_with_media($tweet, [ $img ]);
     for my $s (@ss) {
         say "http://twitter.com/$s->{user}{screen_name}/status/$s->{id}";
         $s->{text} = _entities_to_symbols($s->{text});

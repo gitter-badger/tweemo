@@ -22,6 +22,7 @@ tweemo - Perl emotional twitter client
   > tweemo --st                  # user streams
   > tweemo                       # default action is user streams
   > tweemo @user                 # show the 20 most recent @user's tweets
+  > tweemo --img foo.jpg         # upload image (jpg, png, gif)
 
 =head1 DESCRIPTION
 

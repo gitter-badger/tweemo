@@ -18,7 +18,7 @@ use constant { SUCCESS => 0, INFO => 1, WARN => 2, ERROR => 3 };
 sub run {
     my($self, @args) = @_;
 
-    my($add, $en, $st, $tl, $user);
+    my($add, $en, $img, $st, $tl, $user);
     my $p = Getopt::Long::Parser->new(
         config => [ 'no_ignore_case' ],
     );
@@ -30,6 +30,7 @@ sub run {
         'add'         => \$add,
         'st|stream'   => \$st,
         'tl|timeline' => \$tl,
+        'img=s'       => \$img,
         'en|english'  => \$en,
         'user=s'      => \$user,
     ) or die "error: Invalid options\n";
@@ -39,6 +40,8 @@ sub run {
         $cmd = 'add_user';
     } elsif ($tl) {
         $cmd = 'get_home_timeline';
+    } elsif ($img) {
+        $cmd = 'post_with_media';
     } elsif ($st || !@args) {
         $cmd = 'user_stream';
     } elsif (_is_user_screen_name(@args)) {
@@ -49,7 +52,11 @@ sub run {
 
     my $call = $self->can("cmd_$cmd")
         or die "error: Invalid option commands";
-    $self->$call($user, @args);
+    if ($cmd eq 'post_with_media') {
+        $self->cmd_post_with_media($user, $img, @args);
+    } else {
+        $self->$call($user, @args);
+    }
 
     return 0;
 }
@@ -69,6 +76,7 @@ options:
  --add     add user
  --en      english tweet
  --tl      show the 20 most recent tweets
+ --img     upload image (jpg, png, gif)
 HELP
 }
 
@@ -129,6 +137,16 @@ sub cmd_post_ja {
 
     my $tweet = Tweemo::Orient->concat_orient_ja(@args);
     Tweemo::Action->post($user, $tweet);
+}
+
+sub cmd_post_with_media {
+    my($self, @args) = @_;
+    my $user = shift @args;
+    my $img  = shift @args;
+    my $text = shift @args;
+
+    $text = defined $text ? Tweemo::Orient->concat_orient_ja($text) : '';
+    Tweemo::Action->post_with_media($user, $img, $text);
 }
 
 sub _is_user_screen_name {

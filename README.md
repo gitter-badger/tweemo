@@ -33,6 +33,8 @@ $ tweemo --tl
 $ tweemo --st
 # @user のつぶやき最新20件を取得
 $ tweemo @user
+# 画像upload(jpg, png, gif対応)
+$ tweemo '穏やかじゃない！' --img foo.jpg
 ```
 
 ## Install
