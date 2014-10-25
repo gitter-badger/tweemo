@@ -38,11 +38,13 @@ $ tweemo @user
 ## Install
 
 ```
-# For Mac OS X.
-# If you use Linux, install those from package manager or source.
-$ brew install mecab mecab-ipadic
+# Arch
+$ yaourt -S mecab mecab-ipadic-utf8
+# Debian
+$ sudo apt-get install mecab mecab-ipadic-utf8
+# If you use others, install those from package manager or source.
 
-$ cpanm DBI DBD::SQLite Net::Twitter Statistics::Lite YAML::Tiny
+$ cpanm AnyEvent::Twitter::Stream DBD::SQLite DBI Moo Net::Twitter Statistics::Lite YAML::Tiny
 $ git clone git@github.com:suruga/tweemo.git
 ```
 英語つぶやきをしたい場合のみ，TreeTaggerをインストール後，PATHにtreetagger/{bin,cmd}を追加しておく．
