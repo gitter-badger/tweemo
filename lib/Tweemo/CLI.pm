@@ -77,6 +77,8 @@ options:
  --en      english tweet
  --tl      show the 20 most recent tweets
  --img     upload image (jpg, png, gif)
+
+tweemo \@user  # show the 20 most recent \@user's tweets
 HELP
 }
 
