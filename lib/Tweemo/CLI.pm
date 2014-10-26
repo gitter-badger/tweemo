@@ -21,7 +21,7 @@ binmode STDERR, ':utf8';
 sub run {
     my($self, @args) = @_;
 
-    my($en, $id, $img, $st, $tl, $user);
+    my($del, $en, $id, $img, $st, $tl, $user);
     my $p = Getopt::Long::Parser->new(
         config => [ 'no_ignore_case' ],
     );
@@ -33,6 +33,7 @@ sub run {
         'add'         => sub { $self->cmd_add_user; exit },
         'st|stream'   => \$st,
         'tl|timeline' => \$tl,
+        'del'         => \$del,
         'id=s'        => \$id,
         'img=s'       => \$img,
         'en|english'  => \$en,
@@ -41,6 +42,8 @@ sub run {
 
     if ($tl) {
         $self->cmd_get_home_timeline($user);
+    } elsif ($del) {
+        $self->cmd_destroy($user, $id);
     } elsif ($img) {
         $self->cmd_post_with_media($user, $id, $en, $img, @args);
     } elsif ($st || !@args) {
@@ -68,6 +71,7 @@ options:
  --user    set user
  --add     add user
  --id      reply to status id
+ --del     destroy status id (--id required)
  --en      english tweet
  --tl      show the 20 most recent tweets
  --img     upload image (jpg, png, gif)
@@ -101,6 +105,14 @@ sub cmd_get_home_timeline {
     my $user = shift @args;
 
     Tweemo::Action->get_home_timeline($user);
+}
+
+sub cmd_destroy {
+    my($self, @args) = @_;
+    my $user = shift @args;
+    my $id   = shift @args;
+
+    Tweemo::Action->destroy($user, $id);
 }
 
 sub cmd_user_stream {

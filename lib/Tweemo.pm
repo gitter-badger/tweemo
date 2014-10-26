@@ -17,6 +17,7 @@ tweemo - Perl emotional twitter client
   > tweemo --add                 # add twitter account
   > tweemo 'text'                # default account's japanese tweet
   > tweemo 'text' --id=12345     # replay to status id
+  > tweemo --del  --id=12345     # destroy status id
   > tweemo --user user2 'text'   # user2 account's tweet
   > tweemo --en 'text'           # english tweet
   > tweemo --tl                  # show the 20 most recent tweets

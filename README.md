@@ -22,10 +22,12 @@ tweemo
 $ tweemo --add
 # デフォルトアカウントでつぶやく
 $ tweemo '今日も一日がんばるぞい！'
-# 登録済みアカウント user2 で実行
-$ tweemo --user user2 'もうこんな仕事辞めたいぞい…'
-# http://twitter.com/user2/status/012345678901234567 のつぶやきに返信
-$ tweemo '@user2 ふぁぼらないと血を吸うわよ？' --id 012345678901234567
+# 登録済みアカウント mult_acc で実行
+$ tweemo --user mult_acc 'もうこんな仕事辞めたいぞい…'
+# http://twitter.com/foo/status/012345678901234567 のつぶやきに返信
+$ tweemo '@foo 今夜はクレープみたいな夢に包まれますように' --id 012345678901234567
+# 自身のつぶやき http://twitter.com/my_acc/status/987654321098765432 を削除
+$ tweemo --del --id 987654321098765432
 # tweet in English
 $ tweemo --en "Oh god, it's a bikeshed discussion."
 # TLの最新20件を取得
@@ -33,10 +35,10 @@ $ tweemo --tl
 # User streams
 # 引数，オプションなしは --st と同じ
 $ tweemo --st
-# @user のつぶやき最新20件を取得
-$ tweemo @user
+# @foo のつぶやき最新20件を取得
+$ tweemo @foo
 # 画像upload(jpg, png, gif対応)
-$ tweemo '穏やかじゃない！' --img foo.jpg
+$ tweemo '穏やかじゃない！' --img image.jpg
 ```
 
 ## Install
