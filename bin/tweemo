@@ -10,24 +10,3 @@ use lib File::Spec->catdir($RealBin, File::Spec->updir, 'lib');
 use Tweemo::CLI;
 
 exit Tweemo::CLI->new->run(@ARGV);
-
-__END__
-
-=head1 NAME
-
-tweemo - Perl emotional twitter client
-
-=head1 SYNOPSIS
-
-  > tweemo      'japanese tweet'
-  > tweemo --en 'english tweet'
-
-=head1 DESCRIPTION
-
-For more documentation, refer to L<Tweemo> by running C<tweemo --help>.
-
-=head1 SEE ALSO
-
-L<Tweemo>
-
-=cut

@@ -21,7 +21,7 @@ binmode STDERR, ':utf8';
 sub run {
     my($self, @args) = @_;
 
-    my($en, $img, $st, $tl, $user);
+    my($en, $id, $img, $st, $tl, $user);
     my $p = Getopt::Long::Parser->new(
         config => [ 'no_ignore_case' ],
     );
@@ -33,6 +33,7 @@ sub run {
         'add'         => sub { $self->cmd_add_user; exit },
         'st|stream'   => \$st,
         'tl|timeline' => \$tl,
+        'id=s'        => \$id,
         'img=s'       => \$img,
         'en|english'  => \$en,
         'user=s'      => \$user,
@@ -41,13 +42,13 @@ sub run {
     if ($tl) {
         $self->cmd_get_home_timeline($user);
     } elsif ($img) {
-        $self->cmd_post_with_media($user, $en, $img, @args);
+        $self->cmd_post_with_media($user, $id, $en, $img, @args);
     } elsif ($st || !@args) {
         $self->cmd_user_stream($user);
     } elsif (_is_user_screen_name(@args)) {
         $self->cmd_get_user_timeline($user, @args);
     } else {
-        $self->cmd_post($user, $en, @args);
+        $self->cmd_post($user, $id, $en, @args);
     }
 
     return 0;
@@ -66,6 +67,7 @@ usage: $RealScript 'tweet message'
 options:
  --user    set user
  --add     add user
+ --id      reply to status id
  --en      english tweet
  --tl      show the 20 most recent tweets
  --img     upload image (jpg, png, gif)
@@ -120,23 +122,25 @@ sub cmd_add_user {
 sub cmd_post {
     my($self, @args) = @_;
     my $user = shift @args;
+    my $id   = shift @args;
     my $en   = shift @args;
 
     my $tweet = $en ? Tweemo::Orient->concat_orient_en(@args)
                     : Tweemo::Orient->concat_orient_ja(@args);
-    Tweemo::Action->post($user, $tweet);
+    Tweemo::Action->post($user, $id, $tweet);
 }
 
 sub cmd_post_with_media {
     my($self, @args) = @_;
     my $user = shift @args;
+    my $id   = shift @args;
     my $en   = shift @args;
     my $img  = shift @args;
 
     my $tweet = !@args ? '' :
                 $en ? Tweemo::Orient->concat_orient_en(@args)
                     : Tweemo::Orient->concat_orient_ja(@args);
-    Tweemo::Action->post_with_media($user, $img, $tweet);
+    Tweemo::Action->post_with_media($user, $id, $img, $tweet);
 }
 
 sub _is_user_screen_name {

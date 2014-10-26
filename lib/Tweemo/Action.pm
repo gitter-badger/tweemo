@@ -158,6 +158,7 @@ sub _print_color_bold_unsco {
 sub post {
     my($self, @args) = @_;
     my $user = shift @args;
+    my $id   = shift @args;
 
     my $tweet = shift @args or die "error: no args";
     $tweet = decode('UTF-8', $tweet);
@@ -175,7 +176,8 @@ sub post {
         access_token_secret => $config->{users}->{$du}->{access_secret},
         ssl                 => 1,
     );
-    my @ss = $nt->update($tweet);
+    my @ss = defined $id ? $nt->update($tweet, { in_reply_to_status_id => $id })
+                         : $nt->update($tweet);
     for my $s (@ss) {
         say "http://twitter.com/$s->{user}{screen_name}/status/$s->{id}";
         $s->{text} = _entities_to_symbols($s->{text});
@@ -186,6 +188,7 @@ sub post {
 sub post_with_media {
     my($self, @args) = @_;
     my $user = shift @args;
+    my $id   = shift @args;
     my $img  = shift @args;
 
     my $tweet = shift @args;
@@ -204,7 +207,8 @@ sub post_with_media {
         access_token_secret => $config->{users}->{$du}->{access_secret},
         ssl                 => 1,
     );
-    my @ss = $nt->update_with_media($tweet, [ $img ]);
+    my @ss = defined $id ? $nt->update_with_media($tweet, [ $img ], { in_reply_to_status_id => $id })
+                         : $nt->update_with_media($tweet, [ $img ]);
     for my $s (@ss) {
         say "http://twitter.com/$s->{user}{screen_name}/status/$s->{id}";
         $s->{text} = _entities_to_symbols($s->{text});

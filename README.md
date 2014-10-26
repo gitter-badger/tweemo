@@ -23,7 +23,9 @@ $ tweemo --add
 # デフォルトアカウントでつぶやく
 $ tweemo '今日も一日がんばるぞい！'
 # 登録済みアカウント user2 で実行
-$ tweemo --user=user2 'もうこんな仕事辞めたいぞい…'
+$ tweemo --user user2 'もうこんな仕事辞めたいぞい…'
+# http://twitter.com/user2/status/012345678901234567 のつぶやきに返信
+$ tweemo '@user2 ふぁぼらないと血を吸うわよ？' --id 012345678901234567
 # tweet in English
 $ tweemo --en "Oh god, it's a bikeshed discussion."
 # TLの最新20件を取得
