@@ -14,17 +14,19 @@ tweemo - Perl emotional twitter client
 
 =head1 SYNOPSIS
 
-  > tweemo --add                 # add twitter account
-  > tweemo 'text'                # default account's japanese tweet
-  > tweemo 'text' --id=12345     # replay to status id
-  > tweemo --del  --id=12345     # destroy status id
-  > tweemo --user user2 'text'   # user2 account's tweet
-  > tweemo --en 'text'           # english tweet
-  > tweemo --tl                  # show the 20 most recent tweets
-  > tweemo --st                  # user streams
-  > tweemo                       # default action is user streams
-  > tweemo @user                 # show the 20 most recent @user's tweets
-  > tweemo --img foo.jpg         # upload image (jpg, png, gif)
+  > tweemo --add                    # add twitter account
+  > tweemo 'text'                   # default account's japanese tweet
+  > tweemo --user mult_acc 'text'   # mult_acc account's tweet
+  > tweemo '@foo text' --id=12345   # replay to the tweet
+  > tweemo --rt   --id=12345        # retweet the tweet
+  > tweemo --fav  --id=12345        # favorites the tweet
+  > tweemo --del  --id=12346        # destroy my tweet
+  > tweemo --en 'text'              # english tweet
+  > tweemo --tl                     # show the 20 most recent tweets
+  > tweemo --st                     # user streams
+  > tweemo                          # default action is user streams
+  > tweemo @foo                     # show the 20 most recent @foo's tweets
+  > tweemo 'text' --img foo.jpg     # upload image (jpg, png, gif)
 
 =head1 DESCRIPTION
 

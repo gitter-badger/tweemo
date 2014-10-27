@@ -26,6 +26,10 @@ $ tweemo '今日も一日がんばるぞい！'
 $ tweemo --user mult_acc 'もうこんな仕事辞めたいぞい…'
 # http://twitter.com/foo/status/012345678901234567 のつぶやきに返信
 $ tweemo '@foo 今夜はクレープみたいな夢に包まれますように' --id 012345678901234567
+# http://twitter.com/foo/status/012345678901234567 のつぶやきをRT
+$ tweemo --rt --id 012345678901234567
+# http://twitter.com/foo/status/012345678901234567 のつぶやきをFAV
+$ tweemo --fav --id 012345678901234567
 # 自身のつぶやき http://twitter.com/my_acc/status/987654321098765432 を削除
 $ tweemo --del --id 987654321098765432
 # tweet in English

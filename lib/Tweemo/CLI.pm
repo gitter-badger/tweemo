@@ -21,7 +21,7 @@ binmode STDERR, ':utf8';
 sub run {
     my($self, @args) = @_;
 
-    my($del, $en, $id, $img, $st, $tl, $user);
+    my($del, $en, $fav, $id, $img, $rt, $st, $tl, $user);
     my $p = Getopt::Long::Parser->new(
         config => [ 'no_ignore_case' ],
     );
@@ -33,6 +33,8 @@ sub run {
         'add'         => sub { $self->cmd_add_user; exit },
         'st|stream'   => \$st,
         'tl|timeline' => \$tl,
+        'rt|retweet'  => \$rt,
+        'fav'         => \$fav,
         'del'         => \$del,
         'id=s'        => \$id,
         'img=s'       => \$img,
@@ -42,6 +44,10 @@ sub run {
 
     if ($tl) {
         $self->cmd_get_home_timeline($user);
+    } elsif ($rt) {
+        $self->cmd_retweet($user, $id);
+    } elsif ($fav) {
+        $self->cmd_favorite($user, $id);
     } elsif ($del) {
         $self->cmd_destroy($user, $id);
     } elsif ($img) {
@@ -70,13 +76,16 @@ usage: $RealScript 'tweet message'
 options:
  --user    set user
  --add     add user
- --id      reply to status id
- --del     destroy status id (--id required)
+ --id      reply to the tweet
+ --rt      retweet the tweet   (--id required)
+ --fav     favorites the tweet (--id required)
+ --del     destroy my tweet    (--id required)
  --en      english tweet
  --tl      show the 20 most recent tweets
  --img     upload image (jpg, png, gif)
 
-tweemo \@user  # show the 20 most recent \@user's tweets
+tweemo \@foo                     # show the 20 most recent \@foo's tweets
+tweemo '\@foo LGTM' --id 12345   # reply to the tweet (http://twitter.com/foo/12345)
 HELP
 }
 
@@ -105,6 +114,22 @@ sub cmd_get_home_timeline {
     my $user = shift @args;
 
     Tweemo::Action->get_home_timeline($user);
+}
+
+sub cmd_retweet {
+    my($self, @args) = @_;
+    my $user = shift @args;
+    my $id   = shift @args;
+
+    Tweemo::Action->retweet($user, $id);
+}
+
+sub cmd_favorite {
+    my($self, @args) = @_;
+    my $user = shift @args;
+    my $id   = shift @args;
+
+    Tweemo::Action->favorite($user, $id);
 }
 
 sub cmd_destroy {

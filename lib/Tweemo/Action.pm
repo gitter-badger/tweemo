@@ -39,10 +39,62 @@ sub get_home_timeline {
     }
 }
 
+sub retweet {
+    my($self, @args) = @_;
+    my $user = shift @args;
+    my $id   = shift @args or die "specified status id you want to retweet the tweet\n";
+
+    my $yamlfile = File::Spec->catfile($ENV{'HOME'}, '.tweemo.yml');
+    my $yaml = YAML::Tiny->read($yamlfile);
+    my $config = $yaml->[0];
+
+    my $du = defined $user ? $user : $config->{default_user};
+    my $nt = Net::Twitter->new(
+        traits              => ['API::RESTv1_1'],
+        consumer_key        => $config->{consumer_key},
+        consumer_secret     => $config->{consumer_secret},
+        access_token        => $config->{users}->{$du}->{access_token},
+        access_token_secret => $config->{users}->{$du}->{access_secret},
+        ssl                 => 1,
+    );
+    my $s = $nt->retweet($id);
+    say 'success: retweeted following tweet';
+    say '';
+    say "http://twitter.com/$s->{user}{screen_name}/status/$s->{id}";
+    $s->{text} = _entities_to_symbols($s->{text});
+    say $s->{text};
+}
+
+sub favorite {
+    my($self, @args) = @_;
+    my $user = shift @args;
+    my $id   = shift @args or die "specified status id you want to favorites the tweet\n";
+
+    my $yamlfile = File::Spec->catfile($ENV{'HOME'}, '.tweemo.yml');
+    my $yaml = YAML::Tiny->read($yamlfile);
+    my $config = $yaml->[0];
+
+    my $du = defined $user ? $user : $config->{default_user};
+    my $nt = Net::Twitter->new(
+        traits              => ['API::RESTv1_1'],
+        consumer_key        => $config->{consumer_key},
+        consumer_secret     => $config->{consumer_secret},
+        access_token        => $config->{users}->{$du}->{access_token},
+        access_token_secret => $config->{users}->{$du}->{access_secret},
+        ssl                 => 1,
+    );
+    my $s = $nt->create_favorite($id);
+    say 'success: faved following tweet';
+    say '';
+    say "http://twitter.com/$s->{user}{screen_name}/status/$s->{id}";
+    $s->{text} = _entities_to_symbols($s->{text});
+    say $s->{text};
+}
+
 sub destroy {
     my($self, @args) = @_;
     my $user = shift @args;
-    my $id   = shift @args or die "specified status id you want to delete tweet\n";
+    my $id   = shift @args or die "specified status id you want to delete the tweet\n";
 
     my $yamlfile = File::Spec->catfile($ENV{'HOME'}, '.tweemo.yml');
     my $yaml = YAML::Tiny->read($yamlfile);
