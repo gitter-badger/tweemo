@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use utf8;
 use 5.010;
-use version; our $VERSION = version->declare("v0.0.01");
+use version; our $VERSION = version->declare("v1.0.0");
 
 1;
 __END__
