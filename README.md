@@ -19,43 +19,55 @@ tweemo
 
 ```
 # アカウント登録，追加
-$ tweemo --add
+tweemo --add
+
 # デフォルトアカウントでつぶやく
-$ tweemo '今日も一日がんばるぞい！'
+tweemo '今日も一日がんばるぞい！'
+
 # 登録済みアカウント mult_acc で実行
-$ tweemo --user mult_acc 'もうこんな仕事辞めたいぞい…'
+tweemo --user mult_acc 'もうこんな仕事辞めたいぞい…'
+
 # http://twitter.com/foo/status/012345678901234567 のつぶやきに返信
-$ tweemo '@foo 今夜はクレープみたいな夢に包まれますように' --id 012345678901234567
+tweemo '@foo 今夜はクレープみたいな夢に包まれますように' --id 012345678901234567
+
 # http://twitter.com/foo/status/012345678901234567 のつぶやきをRT
-$ tweemo --rt --id 012345678901234567
+tweemo --rt --id 012345678901234567
+
 # http://twitter.com/foo/status/012345678901234567 のつぶやきをFAV
-$ tweemo --fav --id 012345678901234567
+tweemo --fav --id 012345678901234567
+
 # 自身のつぶやき http://twitter.com/my_acc/status/987654321098765432 を削除
-$ tweemo --del --id 987654321098765432
+tweemo --del --id 987654321098765432
+
 # tweet in English
-$ tweemo --en "Oh god, it's a bikeshed discussion."
+tweemo --en "Oh god, it's a bikeshed discussion."
+
 # TLの最新20件を取得
-$ tweemo --tl
+tweemo --tl
+
 # User streams
 # 引数，オプションなしは --st と同じ
-$ tweemo --st
+tweemo --st
+
 # @foo のつぶやき最新20件を取得
-$ tweemo @foo
+tweemo @foo
+
 # 画像upload(jpg, png, gif対応)
-$ tweemo '穏やかじゃない！' --img image.jpg
+tweemo '穏やかじゃない！' --img image.jpg
 ```
 
 ## Install
 
 ```
 # Arch
-$ yaourt -S mecab mecab-ipadic-utf8
+yaourt -S mecab mecab-ipadic-utf8
 # Debian
-$ sudo apt-get install mecab mecab-ipadic-utf8
+sudo apt-get install mecab mecab-ipadic-utf8
 # If you use others, install those from package manager or source.
 
-$ cpanm AnyEvent::Twitter::Stream DBD::SQLite DBI Moo Net::Twitter Statistics::Lite YAML::Tiny
-$ git clone git@github.com:suruga/tweemo.git
+cpanm AnyEvent::Twitter::Stream DBD::SQLite DBI Moo Net::Twitter Statistics::Lite YAML::Tiny
+
+git clone git@github.com:suruga/tweemo.git
 ```
 英語つぶやきをしたい場合のみ，TreeTaggerをインストール後，PATHにtreetagger/{bin,cmd}を追加しておく．
 
