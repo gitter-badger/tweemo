@@ -48,6 +48,10 @@ tweemo --tl
 # User streams
 # 引数，オプションなしは --st と同じ
 tweemo --st
+tweemo
+# 音声付き User streams
+tweemo --st --say
+tweemo --say
 
 # @foo のつぶやき最新20件を取得
 tweemo @foo
@@ -75,6 +79,7 @@ git clone git@github.com:suruga/tweemo.git
     * Twitter認証ページへ促され，そこで認証．端末へ戻りPINを入力すれば ~/.tweemo.yml が更新される．
 * 複数アカウント対応．デフォルトは最初に登録したアカウント．
     * デフォルトアカウントは .tweemo.yml の default_user: のユーザ名を直接書き換えることで変更可能．
+* --say オプションはGoogle翻訳の日本語でしゃべる．利用するには mplayer へPATHが通っている必要あり．
 
 ## See also
 

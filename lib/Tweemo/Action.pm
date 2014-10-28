@@ -20,6 +20,8 @@ sub get_home_timeline {
     my($self, @args) = @_;
     my $user = shift @args;
 
+    my $say; # TODO:
+
     my $yamlfile = File::Spec->catfile($ENV{'HOME'}, '.tweemo.yml');
     my $yaml = YAML::Tiny->read($yamlfile);
     my $config = $yaml->[0];
@@ -35,7 +37,7 @@ sub get_home_timeline {
     );
     my $ar = $nt->home_timeline;
     for my $tweet (reverse @$ar) {
-        $self->print($tweet);
+        $self->print($tweet, $say);
     }
 }
 
@@ -120,6 +122,7 @@ sub destroy {
 sub user_stream {
     my($self, @args) = @_;
     my $user = shift @args;
+    my $say  = shift @args;
 
     my $cv = AE::cv;
 
@@ -137,7 +140,7 @@ sub user_stream {
         on_tweet        => sub {
             my $tweet = shift;
             return unless defined $tweet->{user}{screen_name};
-            $self->print($tweet);
+            $self->print($tweet, $say);
         },
         on_error        => sub {
             my $error = shift;
@@ -151,6 +154,7 @@ sub get_user_timeline {
     my($self, @args) = @_;
     my($user, $user_screen_name) = @args;
     $user_screen_name =~ s/^@//;
+    my $say; # TODO:
 
     my $yamlfile = File::Spec->catfile($ENV{'HOME'}, '.tweemo.yml');
     my $yaml = YAML::Tiny->read($yamlfile);
@@ -167,25 +171,27 @@ sub get_user_timeline {
     );
     my $ar = $nt->user_timeline({screen_name => $user_screen_name});
     for my $tweet (reverse @$ar) {
-        $self->print($tweet);
+        $self->print($tweet, $say);
     }
 }
 
 sub print {
-    my($self, $tweet) = @_;
+    my($self, $tweet, $say) = @_;
     my $ca  = $tweet->{created_at};
     my $tp  = localtime Time::Piece->strptime($ca, "%a %b %d %T %z %Y")->epoch;
-    my $us  = '@' . $tweet->{user}{screen_name};
+    my $us  = $tweet->{user}{screen_name};
+    speech('ja', $us) if defined $say;
     my $url = "http://twitter.com/$tweet->{user}{screen_name}/status/$tweet->{id}";
     (my $src = $tweet->{source}) =~ s|<a href="(.+)" rel=".+">(.+)</a>|[$2]($1)|;
     print $tp->strftime('[%m/%d '), $tp->wdayname, $tp->strftime('] (%T) ');
-    _print_color_bold_unsco($us);
+    _print_color_bold_unsco("\@$us");
     say " $url $src";
     for (split(/\n/, $tweet->{text})) {
         my @ss = split / /;
         my $i = 0;
         for (@ss) {
             $_ = _entities_to_symbols($_);
+            speech('ja', $_) if defined $say;
             if (/^(.*)(@[a-zA-Z0-9_]+)(.*)$/) {
                 print $1;
                 _print_color_bold_unsco($2);
@@ -200,6 +206,13 @@ sub print {
         }
         say '';
     }
+}
+
+sub speech {
+    my($lang, $text) = @_;
+    $text =~ s/s?https?:\/\/[-_.!~*'()a-zA-Z0-9;\/?:\@&=+\$,%#]+//g;
+    $text =~ s/\"/\\"/g;
+    `mplayer -user-agent Mozilla "http://translate.google.com/translate_tts?ie=UTF-8&tl=$lang&q=\$(echo "$text" |sed 's/ /\+/g')" >/dev/null 2>&1`;
 }
 
 sub _entities_to_symbols {

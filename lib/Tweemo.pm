@@ -25,6 +25,7 @@ tweemo - Perl emotional twitter client
   > tweemo --tl                     # show the 20 most recent tweets
   > tweemo --st                     # user streams
   > tweemo                          # default action is user streams
+  > tweemo --say                    # say User streams by Google translate
   > tweemo @foo                     # show the 20 most recent @foo's tweets
   > tweemo 'text' --img foo.jpg     # upload image (jpg, png, gif)
 

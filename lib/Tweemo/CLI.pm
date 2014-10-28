@@ -21,7 +21,7 @@ binmode STDERR, ':utf8';
 sub run {
     my($self, @args) = @_;
 
-    my($del, $en, $fav, $id, $img, $rt, $st, $tl, $user);
+    my($del, $en, $fav, $id, $img, $rt, $say, $st, $tl, $user);
     my $p = Getopt::Long::Parser->new(
         config => [ 'no_ignore_case' ],
     );
@@ -32,6 +32,7 @@ sub run {
         'version'     => sub { $self->cmd_version;  exit },
         'add'         => sub { $self->cmd_add_user; exit },
         'st|stream'   => \$st,
+        'say|speech'  => \$say,
         'tl|timeline' => \$tl,
         'rt|retweet'  => \$rt,
         'fav'         => \$fav,
@@ -53,7 +54,7 @@ sub run {
     } elsif ($img) {
         $self->cmd_post_with_media($user, $id, $en, $img, @args);
     } elsif ($st || !@args) {
-        $self->cmd_user_stream($user);
+        $self->cmd_user_stream($user, $say);
     } elsif (_is_user_screen_name(@args)) {
         $self->cmd_get_user_timeline($user, @args);
     } else {
@@ -77,6 +78,8 @@ options:
  --user    set user
  --add     add user
  --id      reply to the tweet
+ --st      user streams (default action)
+ --say     say User streams by Google translate
  --rt      retweet the tweet   (--id required)
  --fav     favorites the tweet (--id required)
  --del     destroy my tweet    (--id required)
@@ -143,8 +146,9 @@ sub cmd_destroy {
 sub cmd_user_stream {
     my($self, @args) = @_;
     my $user = shift @args;
+    my $say  = shift @args;
 
-    Tweemo::Action->user_stream($user);
+    Tweemo::Action->user_stream($user, $say);
 }
 
 sub cmd_get_user_timeline {
