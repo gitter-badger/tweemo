@@ -23,6 +23,7 @@ tweemo - Perl emotional twitter client
   > tweemo --del  --id=12346        # destroy my tweet
   > tweemo --en 'text'              # english tweet
   > tweemo --tl                     # show the 20 most recent tweets
+  > tweemo --tl -n K                # show the K(<= 200) most recent tweets
   > tweemo --st                     # user streams
   > tweemo                          # default action is user streams
   > tweemo --say                    # say User streams by Google translate

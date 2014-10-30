@@ -21,7 +21,7 @@ binmode STDERR, ':utf8';
 sub run {
     my($self, @args) = @_;
 
-    my($del, $en, $fav, $id, $img, $rt, $say, $st, $tl, $user);
+    my($del, $en, $fav, $id, $img, $n, $rt, $say, $st, $tl, $user);
     my $p = Getopt::Long::Parser->new(
         config => [ 'no_ignore_case' ],
     );
@@ -34,6 +34,7 @@ sub run {
         'st|stream'   => \$st,
         'say|speech'  => \$say,
         'tl|timeline' => \$tl,
+        'n|num=s'     => \$n,
         'rt|retweet'  => \$rt,
         'fav'         => \$fav,
         'del'         => \$del,
@@ -44,7 +45,7 @@ sub run {
     ) or die "error: Invalid options\n";
 
     if ($tl) {
-        $self->cmd_get_home_timeline($user);
+        $self->cmd_get_home_timeline($user, $n);
     } elsif ($rt) {
         $self->cmd_retweet($user, $id);
     } elsif ($fav) {
@@ -75,17 +76,18 @@ sub cmd_usage {
 usage: $RealScript 'tweet message'
 
 options:
- --user    set user
- --add     add user
- --id      reply to the tweet
- --st      user streams (default action)
- --say     say User streams by Google translate
- --rt      retweet the tweet   (--id required)
- --fav     favorites the tweet (--id required)
- --del     destroy my tweet    (--id required)
- --en      english tweet
- --tl      show the 20 most recent tweets
- --img     upload image (jpg, png, gif)
+ --user      set user
+ --add       add user
+ --id        reply to the tweet
+ --st        user streams (default action)
+ --say       say User streams by Google translate
+ --rt        retweet the tweet   (--id required)
+ --fav       favorites the tweet (--id required)
+ --del       destroy my tweet    (--id required)
+ --en        english tweet
+ --tl        show the 20 most recent tweets
+ --tl -n K   show the K(<= 200) most recent tweets
+ --img       upload image (jpg, png, gif)
 
 tweemo \@foo                     # show the 20 most recent \@foo's tweets
 tweemo '\@foo LGTM' --id 12345   # reply to the tweet (http://twitter.com/foo/12345)
@@ -114,9 +116,10 @@ sub cmd_version {
 
 sub cmd_get_home_timeline {
     my($self, @args) = @_;
-    my $user = shift @args;
+    my $user  = shift @args;
+    my $count = shift @args;
 
-    Tweemo::Action->get_home_timeline($user);
+    Tweemo::Action->get_home_timeline($user, $count);
 }
 
 sub cmd_retweet {

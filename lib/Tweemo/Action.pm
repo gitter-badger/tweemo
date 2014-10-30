@@ -18,7 +18,8 @@ binmode STDERR, ':utf8';
 
 sub get_home_timeline {
     my($self, @args) = @_;
-    my $user = shift @args;
+    my $user  = shift @args;
+    my $count = shift @args;
 
     my $say; # TODO:
 
@@ -35,7 +36,8 @@ sub get_home_timeline {
         access_token_secret => $config->{users}->{$du}->{access_secret},
         ssl                 => 1,
     );
-    my $ar = $nt->home_timeline;
+    my $ar = defined $count ? $nt->home_timeline({ count => $count })
+                            : $nt->home_timeline;
     for my $tweet (reverse @$ar) {
         $self->print($tweet, $say);
     }

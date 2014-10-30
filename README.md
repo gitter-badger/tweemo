@@ -44,6 +44,8 @@ tweemo --en "Oh god, it's a bikeshed discussion."
 
 # TLの最新20件を取得
 tweemo --tl
+# TL最新100件を取得(最大200件)
+tweemo --tl -n 100
 
 # User streams
 # 引数，オプションなしは --st と同じ
