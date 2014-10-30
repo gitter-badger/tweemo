@@ -181,13 +181,16 @@ sub print {
     my($self, $tweet, $say) = @_;
     my $ca  = $tweet->{created_at};
     my $tp  = localtime Time::Piece->strptime($ca, "%a %b %d %T %z %Y")->epoch;
+    my $un  = $tweet->{user}{name};
     my $us  = $tweet->{user}{screen_name};
     speech('ja', $us) if defined $say;
     my $url = "http://twitter.com/$tweet->{user}{screen_name}/status/$tweet->{id}";
-    (my $src = $tweet->{source}) =~ s|<a href="(.+)" rel=".+">(.+)</a>|[$2]($1)|;
+    (my $src = $tweet->{source}) =~ s|<a href="(.+)" rel=".+">(.+)</a>|$2 $1|;
     print $tp->strftime('[%m/%d '), $tp->wdayname, $tp->strftime('] (%T) ');
     _print_color_bold_unsco("\@$us");
-    say " $url $src";
+    print ' ';
+    print BOLD, $un, RESET;
+    say " $url";
     for (split(/\n/, $tweet->{text})) {
         my @ss = split / /;
         my $i = 0;
@@ -208,6 +211,7 @@ sub print {
         }
         say '';
     }
+    say ": $src";
 }
 
 sub speech {
