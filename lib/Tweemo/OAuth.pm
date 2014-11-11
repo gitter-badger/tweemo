@@ -27,9 +27,9 @@ sub add_user {
     chomp $pin;
 
     my($token, $token_secret, $user_id, $screen_name)
-    = $nt->request_access_token(verifier => $pin);
+      = $nt->request_access_token(verifier => $pin);
     die "'$screen_name' has already registered!\n"
-    if _is_dup_account($config, $user_id);
+      if _is_dup_account($config, $user_id);
     say "Welcome, ${screen_name}!";
 
     $config->{users}->{$screen_name} = {
@@ -41,8 +41,7 @@ sub add_user {
   } else {
     my $config;
     $config->{consumer_key} = 'enH9Qk9yhFiFnE2D86C0i0WbF';
-    $config->{consumer_secret}
-    = '4yd91BnBlz3j8BghrL7UoRkEZ18slJDVozA1IULXL7D7HNLgo5';
+    $config->{consumer_secret} = '4yd91BnBlz3j8BghrL7UoRkEZ18slJDVozA1IULXL7D7HNLgo5';
 
     my $nt = Net::Twitter->new(
       traits          => ['API::RESTv1_1'],
@@ -57,7 +56,7 @@ sub add_user {
     chomp $pin;
 
     my($token, $token_secret, $user_id, $screen_name)
-    = $nt->request_access_token(verifier => $pin);
+      = $nt->request_access_token(verifier => $pin);
     say "Welcome, ${screen_name}!";
 
     $config->{default_user} = $screen_name;

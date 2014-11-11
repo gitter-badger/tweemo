@@ -23,19 +23,7 @@ sub get_home_timeline {
 
   my $say = undef; # TODO:
 
-  my $yamlfile = File::Spec->catfile($ENV{'HOME'}, '.tweemo.yml');
-  my $yaml     = YAML::Tiny->read($yamlfile);
-  my $config   = $yaml->[0];
-
-  my $du = defined $user ? $user : $config->{default_user};
-  my $nt = Net::Twitter->new(
-    traits              => ['API::RESTv1_1'],
-    consumer_key        => $config->{consumer_key},
-    consumer_secret     => $config->{consumer_secret},
-    access_token        => $config->{users}->{$du}->{access_token},
-    access_token_secret => $config->{users}->{$du}->{access_secret},
-    ssl                 => 1,
-  );
+  my $nt = _get_net_twitter_obj($user);
   my $ar = defined $count ? $nt->home_timeline({ count => $count })
                           : $nt->home_timeline;
   for my $tweet (reverse @$ar) {
@@ -48,19 +36,7 @@ sub retweet {
   my $user = shift @args;
   my $id   = shift @args or die "specified status id you want to retweet the tweet\n";
 
-  my $yamlfile = File::Spec->catfile($ENV{'HOME'}, '.tweemo.yml');
-  my $yaml     = YAML::Tiny->read($yamlfile);
-  my $config   = $yaml->[0];
-
-  my $du = defined $user ? $user : $config->{default_user};
-  my $nt = Net::Twitter->new(
-    traits              => ['API::RESTv1_1'],
-    consumer_key        => $config->{consumer_key},
-    consumer_secret     => $config->{consumer_secret},
-    access_token        => $config->{users}->{$du}->{access_token},
-    access_token_secret => $config->{users}->{$du}->{access_secret},
-    ssl                 => 1,
-  );
+  my $nt = _get_net_twitter_obj($user);
   my $s = $nt->retweet($id);
   say 'success: retweeted following tweet';
   say '';
@@ -74,19 +50,7 @@ sub favorite {
   my $user = shift @args;
   my $id   = shift @args or die "specified status id you want to favorites the tweet\n";
 
-  my $yamlfile = File::Spec->catfile($ENV{'HOME'}, '.tweemo.yml');
-  my $yaml     = YAML::Tiny->read($yamlfile);
-  my $config   = $yaml->[0];
-
-  my $du = defined $user ? $user : $config->{default_user};
-  my $nt = Net::Twitter->new(
-    traits              => ['API::RESTv1_1'],
-    consumer_key        => $config->{consumer_key},
-    consumer_secret     => $config->{consumer_secret},
-    access_token        => $config->{users}->{$du}->{access_token},
-    access_token_secret => $config->{users}->{$du}->{access_secret},
-    ssl                 => 1,
-  );
+  my $nt = _get_net_twitter_obj($user);
   my $s = $nt->create_favorite($id);
   say 'success: faved following tweet';
   say '';
@@ -100,19 +64,7 @@ sub destroy {
   my $user = shift @args;
   my $id   = shift @args or die "specified status id you want to delete the tweet\n";
 
-  my $yamlfile = File::Spec->catfile($ENV{'HOME'}, '.tweemo.yml');
-  my $yaml     = YAML::Tiny->read($yamlfile);
-  my $config   = $yaml->[0];
-
-  my $du = defined $user ? $user : $config->{default_user};
-  my $nt = Net::Twitter->new(
-    traits              => ['API::RESTv1_1'],
-    consumer_key        => $config->{consumer_key},
-    consumer_secret     => $config->{consumer_secret},
-    access_token        => $config->{users}->{$du}->{access_token},
-    access_token_secret => $config->{users}->{$du}->{access_secret},
-    ssl                 => 1,
-  );
+  my $nt = _get_net_twitter_obj($user);
   my $s = $nt->destroy_status($id);
   say 'success: destroyed following tweet';
   say '';
@@ -158,19 +110,7 @@ sub get_user_timeline {
   $user_screen_name =~ s/^@//;
   my $say = undef; # TODO:
 
-  my $yamlfile = File::Spec->catfile($ENV{'HOME'}, '.tweemo.yml');
-  my $yaml     = YAML::Tiny->read($yamlfile);
-  my $config   = $yaml->[0];
-
-  my $du = defined $user ? $user : $config->{default_user};
-  my $nt = Net::Twitter->new(
-    traits              => ['API::RESTv1_1'],
-    consumer_key        => $config->{consumer_key},
-    consumer_secret     => $config->{consumer_secret},
-    access_token        => $config->{users}->{$du}->{access_token},
-    access_token_secret => $config->{users}->{$du}->{access_secret},
-    ssl                 => 1,
-  );
+  my $nt = _get_net_twitter_obj($user);
   my $ar = $nt->user_timeline({screen_name => $user_screen_name});
   for my $tweet (reverse @$ar) {
     $self->print($tweet, $say);
@@ -260,19 +200,7 @@ sub post {
   my $tweet = shift @args or die "error: no args";
   $tweet = decode('UTF-8', $tweet);
 
-  my $yamlfile = File::Spec->catfile($ENV{'HOME'}, '.tweemo.yml');
-  my $yaml     = YAML::Tiny->read($yamlfile);
-  my $config   = $yaml->[0];
-
-  my $du = defined $user ? $user : $config->{default_user};
-  my $nt = Net::Twitter->new(
-    traits              => ['API::RESTv1_1'],
-    consumer_key        => $config->{consumer_key},
-    consumer_secret     => $config->{consumer_secret},
-    access_token        => $config->{users}->{$du}->{access_token},
-    access_token_secret => $config->{users}->{$du}->{access_secret},
-    ssl                 => 1,
-  );
+  my $nt = _get_net_twitter_obj($user);
   my @ss = defined $id ? $nt->update($tweet, { in_reply_to_status_id => $id })
                        : $nt->update($tweet);
   for my $s (@ss) {
@@ -291,19 +219,7 @@ sub post_with_media {
   my $tweet = shift @args;
   $tweet = defined $tweet ? decode('UTF-8', $tweet) : '';
 
-  my $yamlfile = File::Spec->catfile($ENV{'HOME'}, '.tweemo.yml');
-  my $yaml = YAML::Tiny->read($yamlfile);
-  my $config = $yaml->[0];
-
-  my $du = defined $user ? $user : $config->{default_user};
-  my $nt = Net::Twitter->new(
-    traits              => ['API::RESTv1_1'],
-    consumer_key        => $config->{consumer_key},
-    consumer_secret     => $config->{consumer_secret},
-    access_token        => $config->{users}->{$du}->{access_token},
-    access_token_secret => $config->{users}->{$du}->{access_secret},
-    ssl                 => 1,
-  );
+  my $nt = _get_net_twitter_obj($user);
   my @ss = defined $id ? $nt->update_with_media($tweet, [ $img ], { in_reply_to_status_id => $id })
                        : $nt->update_with_media($tweet, [ $img ]);
   for my $s (@ss) {
@@ -311,6 +227,23 @@ sub post_with_media {
     $s->{text} = _entities_to_symbols($s->{text});
     say $s->{text};
   }
+}
+
+sub _get_net_twitter_obj {
+  my $user = shift;
+
+  my $yamlfile = File::Spec->catfile($ENV{'HOME'}, '.tweemo.yml');
+  my $yaml = YAML::Tiny->read($yamlfile);
+  my $config = $yaml->[0];
+  my $du = defined $user ? $user : $config->{default_user};
+  return Net::Twitter->new(
+    traits              => ['API::RESTv1_1'],
+    consumer_key        => $config->{consumer_key},
+    consumer_secret     => $config->{consumer_secret},
+    access_token        => $config->{users}->{$du}->{access_token},
+    access_token_secret => $config->{users}->{$du}->{access_secret},
+    ssl                 => 1,
+  );
 }
 
 1;
