@@ -1,7 +1,6 @@
 package Tweemo::CLI;
 use strict;
 use warnings;
-use utf8;
 use 5.010;
 use File::Spec;
 use FindBin qw($RealBin $RealScript);
@@ -14,9 +13,6 @@ use Tweemo::OAuth;
 use Tweemo::Orient;
 
 use constant { SUCCESS => 0, INFO => 1, WARN => 2, ERROR => 3 };
-
-binmode STDOUT, ':utf8';
-binmode STDERR, ':utf8';
 
 sub run {
   my($self, @args) = @_;
