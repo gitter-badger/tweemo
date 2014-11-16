@@ -15,9 +15,9 @@ use Tweemo::Orient;
 use constant { SUCCESS => 0, INFO => 1, WARN => 2, ERROR => 3 };
 
 sub run {
-  my($self, @args) = @_;
+  my ($self, @args) = @_;
 
-  my($del, $en, $fav, $id, $img, $n, $rt, $say, $st, $tl, $user);
+  my ($del, $en, $fav, $id, $img, $n, $rt, $say, $st, $tl, $user);
   my $p = Getopt::Long::Parser->new(
     config => [ 'no_ignore_case' ],
   );
@@ -62,16 +62,16 @@ sub run {
 }
 
 sub cmd_help {
-  my $self = shift;
+  my ($self) = @_;
   $self->cmd_usage;
 }
 
 sub cmd_usage {
-  my $self = shift;
+  my ($self) = @_;
   $self->print(<<HELP);
-usage: $RealScript 'tweet message'
+Usage: $RealScript 'tweet message'
 
-options:
+Options:
  --user      set user
  --add       add user
  --id        reply to the tweet
@@ -91,68 +91,52 @@ HELP
 }
 
 sub cmd_man {
-  my $self = shift;
+  my ($self) = @_;
   (my $p = $RealBin) =~ s/(.+)\/.+/$1/;
-  my $doc = File::Spec->catfile($RealBin, File::Spec->updir(), 'lib',
-    'Tweemo.pm');
+  my $doc = File::Spec->catfile($RealBin, File::Spec->updir(), 'lib', 'Tweemo.pm');
   system 'perldoc', $doc;
   exit;
 }
 
 sub print {
-  my($self, $msg, $type) = @_;
+  my ($self, $msg, $type) = @_;
   my $fh = $type && $type >= WARN ? *STDERR : *STDOUT;
   print {$fh} $msg;
 }
 
 sub cmd_version {
-  my $self = shift;
+  my ($self) = @_;
   $self->print("$RealScript $Tweemo::VERSION\n");
 }
 
 sub cmd_get_home_timeline {
-  my($self, @args) = @_;
-  my $user  = shift @args;
-  my $count = shift @args;
-
+  my ($self, $user, $count) = @_;
   Tweemo::Action->get_home_timeline($user, $count);
 }
 
 sub cmd_retweet {
-  my($self, @args) = @_;
-  my $user = shift @args;
-  my $id   = shift @args;
-
+  my ($self, $user, $id) = @_;
   Tweemo::Action->retweet($user, $id);
 }
 
 sub cmd_favorite {
-  my($self, @args) = @_;
-  my $user = shift @args;
-  my $id   = shift @args;
-
+  my ($self, $user, $id) = @_;
   Tweemo::Action->favorite($user, $id);
 }
 
 sub cmd_destroy {
-  my($self, @args) = @_;
-  my $user = shift @args;
-  my $id   = shift @args;
-
+  my ($self, $user, $id) = @_;
   Tweemo::Action->destroy($user, $id);
 }
 
 sub cmd_user_stream {
-  my($self, @args) = @_;
-  my $user = shift @args;
-  my $say  = shift @args;
-
+  my ($self, $user, $say) = @_;
   Tweemo::Action->user_stream($user, $say);
 }
 
 sub cmd_get_user_timeline {
-  my($self, @args) = @_;
-  Tweemo::Action->get_user_timeline(@args);
+  my ($self, $user, $user_screen_name) = @_;
+  Tweemo::Action->get_user_timeline($user, $user_screen_name);
 }
 
 sub cmd_add_user {
@@ -160,26 +144,19 @@ sub cmd_add_user {
 }
 
 sub cmd_post {
-  my($self, @args) = @_;
-  my $user = shift @args;
-  my $id   = shift @args;
-  my $en   = shift @args;
+  my ($self, $user, $id, $en, $msg) = @_;
 
-  my $tweet = $en ? Tweemo::Orient->concat_orient_en(@args)
-  : Tweemo::Orient->concat_orient_ja(@args);
+  my $tweet = $en ? Tweemo::Orient->concat_orient_en($msg)
+                  : Tweemo::Orient->concat_orient_ja($msg);
   Tweemo::Action->post($user, $id, $tweet);
 }
 
 sub cmd_post_with_media {
-  my($self, @args) = @_;
-  my $user = shift @args;
-  my $id   = shift @args;
-  my $en   = shift @args;
-  my $img  = shift @args;
+  my ($self, $user, $id, $en, $img, $msg) = @_;
 
-  my $tweet = !@args ? '' :
-  $en ? Tweemo::Orient->concat_orient_en(@args)
-  : Tweemo::Orient->concat_orient_ja(@args);
+  my $tweet = !defined $msg ? ''
+                : $en ? Tweemo::Orient->concat_orient_en($msg)
+                      : Tweemo::Orient->concat_orient_ja($msg);
   Tweemo::Action->post_with_media($user, $id, $img, $tweet);
 }
 

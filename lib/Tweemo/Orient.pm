@@ -12,9 +12,9 @@ use Moo;
 use Statistics::Lite qw(mean);
 
 sub concat_orient_en {
-  my($self, @args) = @_;
+  my ($self, $msg) = @_;
 
-  my $msg = shift @args or die "error: no args";
+  die "error: no message\n" unless defined $msg;
   my $D = "\t"; # delimiter
   my $treetagger = 'tree-tagger-english';
 
@@ -26,7 +26,7 @@ sub concat_orient_en {
 
   my $db = File::Spec->catfile($RealBin, File::Spec->updir, 'db', 'pn_en.dic.db');
   my $dbh = DBI->connect("dbi:SQLite:dbname=$db", undef, undef,
-    {AutoCommit => 0, RaiseError => 1 });
+                         {AutoCommit => 0, RaiseError => 1 });
   $dbh->{sqlite_unicode} = 1;
 
   (my $s = $msg) =~ s/"/\\"/g;
@@ -34,7 +34,7 @@ sub concat_orient_en {
   my @os = ();
   for (@res) {
     if (/^.+$D(.+)$D(.+)$/) {
-      my($p, $l) = ($1, $2);
+      my ($p, $l) = ($1, $2);
       $l = "\L$l";    # dictionary containts only lowercase
       if ($p =~ $v_regex) {        # verb
         push @os, _get_orient_en($dbh, $l, 'v');
@@ -58,7 +58,7 @@ sub concat_orient_en {
 }
 
 sub _get_orient_en {
-  my($dbh, $w, $p) = @_;
+  my ($dbh, $w, $p) = @_;
   my $sth = $dbh->prepare("SELECT orient FROM dictionary WHERE word=? AND pos=?;");
   $sth->execute($w, $p);
   while (my $hr = $sth->fetchrow_arrayref) {
@@ -68,16 +68,16 @@ sub _get_orient_en {
 }
 
 sub concat_orient_ja {
-  my($self, @args) = @_;
+  my ($self, $msg) = @_;
 
-  my $msg = shift @args or die "error: no tweet";
+  die "error: no message" unless defined $msg;
 
-  my($v_regex, $n_regex, $a_regex, $r_regex, $av_regex)
+  my ($v_regex, $n_regex, $a_regex, $r_regex, $av_regex)
     = (qr/^動詞$/, qr/^名詞$/, qr/^形容詞$/, qr/^副詞$/, qr/^助動詞$/);
 
   my $db = File::Spec->catfile($RealBin, File::Spec->updir, 'db', 'pn_ja.dic.db');
   my $dbh = DBI->connect("dbi:SQLite:dbname=$db", undef, undef,
-    {AutoCommit => 0, RaiseError => 1 });
+                         {AutoCommit => 0, RaiseError => 1 });
   $dbh->{sqlite_unicode} = 1;
 
   (my $s = $msg) =~ s/"/\\"/g;
@@ -85,7 +85,7 @@ sub concat_orient_ja {
   my @os = ();
   for (@res) {
     if (/^.+\t(.+),.+,.+,.+,.+,.+,(.+),(.+),.+$/) {
-      my($p, $w, $r) = ($1, $2, $3);
+      my ($p, $w, $r) = ($1, $2, $3);
       $p = decode('UTF-8', $p);
       $w = decode('UTF-8', $w);
       $r = decode('UTF-8', $r);
@@ -113,7 +113,7 @@ sub concat_orient_ja {
 }
 
 sub _get_orient_ja {
-  my($dbh, $w, $r, $p) = @_;
+  my ($dbh, $w, $r, $p) = @_;
   my $sth = $dbh->prepare("SELECT orient FROM dictionary WHERE word=? AND reading=? AND pos=?;");
   $sth->execute($w, $r, $p);
   while (my $hr = $sth->fetchrow_arrayref) {

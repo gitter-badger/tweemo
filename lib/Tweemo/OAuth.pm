@@ -25,7 +25,7 @@ sub add_user {
     my $pin = <STDIN>;
     chomp $pin;
 
-    my($token, $token_secret, $user_id, $screen_name)
+    my ($token, $token_secret, $user_id, $screen_name)
       = $nt->request_access_token(verifier => $pin);
     die "'$screen_name' has already registered!\n"
       if _is_dup_account($config, $user_id);
@@ -54,7 +54,7 @@ sub add_user {
     my $pin = <STDIN>;
     chomp $pin;
 
-    my($token, $token_secret, $user_id, $screen_name)
+    my ($token, $token_secret, $user_id, $screen_name)
       = $nt->request_access_token(verifier => $pin);
     say "Welcome, ${screen_name}!";
 
@@ -72,7 +72,7 @@ sub add_user {
 }
 
 sub _is_dup_account {
-  my($c, $id) = @_;
+  my ($c, $id) = @_;
   for (keys %{$c->{users}}) {
     return 1 if $c->{users}->{$_}->{id} == $id;
   }
@@ -80,7 +80,7 @@ sub _is_dup_account {
 }
 
 sub _open_default_browser {
-  my $url = shift;
+  my ($url) = @_;
 
   my $cmd;
   if ($^O eq 'darwin') {

@@ -16,10 +16,7 @@ binmode STDOUT, ':utf8';
 binmode STDERR, ':utf8';
 
 sub get_home_timeline {
-  my($self, @args) = @_;
-  my $user  = shift @args;
-  my $count = shift @args;
-
+  my ($self, $user, $count) = @_;
   my $say = undef; # TODO:
 
   my $nt = _get_net_twitter_obj($user);
@@ -31,9 +28,8 @@ sub get_home_timeline {
 }
 
 sub retweet {
-  my($self, @args) = @_;
-  my $user = shift @args;
-  my $id   = shift @args or die "specified status id you want to retweet the tweet\n";
+  my ($self, $user, $id) = @_;
+  die "specified status id you want to retweet the tweet\n" unless defined $id;
 
   my $nt = _get_net_twitter_obj($user);
   my $s = $nt->retweet($id);
@@ -45,9 +41,8 @@ sub retweet {
 }
 
 sub favorite {
-  my($self, @args) = @_;
-  my $user = shift @args;
-  my $id   = shift @args or die "specified status id you want to favorites the tweet\n";
+  my ($self, $user, $id) = @_;
+  die "specified status id you want to favorite the tweet\n" unless defined $id;
 
   my $nt = _get_net_twitter_obj($user);
   my $s = $nt->create_favorite($id);
@@ -59,9 +54,8 @@ sub favorite {
 }
 
 sub destroy {
-  my($self, @args) = @_;
-  my $user = shift @args;
-  my $id   = shift @args or die "specified status id you want to delete the tweet\n";
+  my ($self, $user, $id) = @_;
+  die "specified status id you want to delete the tweet\n" unless defined $id;
 
   my $nt = _get_net_twitter_obj($user);
   my $s = $nt->destroy_status($id);
@@ -73,9 +67,7 @@ sub destroy {
 }
 
 sub user_stream {
-  my($self, @args) = @_;
-  my $user = shift @args;
-  my $say  = shift @args;
+  my ($self, $user, $say) = @_;
 
   my $cv = AE::cv;
 
@@ -104,8 +96,7 @@ sub user_stream {
 }
 
 sub get_user_timeline {
-  my($self, @args) = @_;
-  my($user, $user_screen_name) = @args;
+  my ($self, $user, $user_screen_name) = @_;
   $user_screen_name =~ s/^@//;
   my $say = undef; # TODO:
 
@@ -117,7 +108,7 @@ sub get_user_timeline {
 }
 
 sub print {
-  my($self, $tweet, $say) = @_;
+  my ($self, $tweet, $say) = @_;
   my $ca  = $tweet->{created_at};
   my $tp  = localtime Time::Piece->strptime($ca, "%a %b %d %T %z %Y")->epoch;
   my $un  = $tweet->{user}{name};
@@ -154,14 +145,14 @@ sub print {
 }
 
 sub speech {
-  my($lang, $text) = @_;
+  my ($lang, $text) = @_;
   $text =~ s/s?https?:\/\/[-_.!~*'()a-zA-Z0-9;\/?:\@&=+\$,%#]+//g;
   $text =~ s/\"/\\"/g;
   `mplayer -user-agent Mozilla "http://translate.google.com/translate_tts?ie=UTF-8&tl=$lang&q=\$(echo "$text" |sed 's/ /\+/g')" >/dev/null 2>&1`;
 }
 
 sub _entities_to_symbols {
-  my $l = shift;
+  my ($l) = @_;
   $l =~ s/\&gt;/>/g;
   $l =~ s/\&lt;/</g;
   $l =~ s/\&amp;/&/g;
@@ -169,7 +160,7 @@ sub _entities_to_symbols {
 }
 
 sub _print_color_bold_unsco {
-  my $s = shift;
+  my ($s) = @_;
   my $n = sum0 map { ord } split //, $s;
 
   # can't use array as color variables
@@ -192,11 +183,9 @@ sub _print_color_bold_unsco {
 }
 
 sub post {
-  my($self, @args) = @_;
-  my $user = shift @args;
-  my $id   = shift @args;
+  my ($self, $user, $id, $tweet) = @_;
 
-  my $tweet = shift @args or die "error: no args";
+  die "error: no args\n" unless defined $tweet;
   $tweet = decode('UTF-8', $tweet);
 
   my $nt = _get_net_twitter_obj($user);
@@ -210,12 +199,8 @@ sub post {
 }
 
 sub post_with_media {
-  my($self, @args) = @_;
-  my $user = shift @args;
-  my $id   = shift @args;
-  my $img  = shift @args;
+  my ($self, $user, $id, $img, $tweet) = @_;
 
-  my $tweet = shift @args;
   $tweet = defined $tweet ? decode('UTF-8', $tweet) : '';
 
   my $nt = _get_net_twitter_obj($user);
@@ -229,7 +214,7 @@ sub post_with_media {
 }
 
 sub _get_net_twitter_obj {
-  my $user = shift;
+  my ($user) = @_;
 
   my $yamlfile = File::Spec->catfile($ENV{'HOME'}, '.tweemo.yml');
   my $yaml = YAML::Tiny->read($yamlfile);
