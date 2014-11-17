@@ -1,6 +1,7 @@
 package Tweemo::Action;
 use strict;
 use warnings;
+use utf8;
 use 5.010;
 use AnyEvent::Twitter::Stream;
 use Time::Piece;
@@ -89,7 +90,7 @@ sub user_stream {
     },
     on_error        => sub {
       my $error = shift;
-      die "error: $error";
+      die "stream error: $error";
     },
   );
   $cv->recv;
