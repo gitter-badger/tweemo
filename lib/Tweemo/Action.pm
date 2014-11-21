@@ -122,7 +122,8 @@ sub print {
   speech('ja', $us) if defined $say;
   my $url = "http://twitter.com/$tweet->{user}{screen_name}/status/$tweet->{id}";
   (my $src = $tweet->{source}) =~ s|<a href="(.+)" rel=".+">(.+)</a>|$2 $1|;
-  print $tp->strftime('[%m/%d '), $tp->wdayname, $tp->strftime('] (%T) ');
+  print $tp->strftime('[%m/%d %a] (%T)');
+  print ' ';
   _print_color_bold_unsco("\@$us");
   print ' ';
   print BOLD, $un, RESET;
