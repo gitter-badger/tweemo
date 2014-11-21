@@ -30,10 +30,10 @@ sub concat_orient_en {
   $dbh->{sqlite_unicode} = 1;
 
   (my $s = $msg) =~ s/"/\\"/g;
-  my @res = split(/\n/, `echo "$s" |$treetagger 2>/dev/null`);
+  my @xs = split(/\n/, `echo "$s" |$treetagger 2>/dev/null`);
   my @os = ();
-  for (@res) {
-    if (/^.+$D(.+)$D(.+)$/) {
+  for my $x (@xs) {
+    if ($x =~ /^.+$D(.+)$D(.+)$/) {
       my ($p, $l) = ($1, $2);
       $l = "\L$l";    # dictionary containts only lowercase
       if ($p =~ $v_regex) {        # verb
@@ -81,10 +81,10 @@ sub concat_orient_ja {
   $dbh->{sqlite_unicode} = 1;
 
   (my $s = $msg) =~ s/"/\\"/g;
-  my @res = split(/\n/, `echo "$s" |mecab`);
+  my @xs = split(/\n/, `echo "$s" |mecab`);
   my @os = ();
-  for (@res) {
-    if (/^.+\t(.+),.+,.+,.+,.+,.+,(.+),(.+),.+$/) {
+  for my $x (@xs) {
+    if ($x =~ /^.+\t(.+),.+,.+,.+,.+,.+,(.+),(.+),.+$/) {
       my ($p, $w, $r) = ($1, $2, $3);
       $p = decode('UTF-8', $p);
       $w = decode('UTF-8', $w);

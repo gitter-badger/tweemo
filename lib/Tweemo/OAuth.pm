@@ -73,8 +73,8 @@ sub add_user {
 
 sub _is_dup_account {
   my ($c, $id) = @_;
-  for (keys %{$c->{users}}) {
-    return 1 if $c->{users}->{$_}->{id} == $id;
+  for my $sn (keys %{$c->{users}}) {
+    return 1 if $c->{users}->{$sn}->{id} == $id;
   }
   return 0;
 }

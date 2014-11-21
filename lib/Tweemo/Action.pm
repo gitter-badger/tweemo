@@ -4,13 +4,14 @@ use warnings;
 use utf8;
 use 5.010;
 use AnyEvent::Twitter::Stream;
-use Time::Piece;
 use Encode qw(decode);
 use File::Spec;
 use List::Util qw(sum0);
+use HTML::Entities;
 use Moo;
 use Net::Twitter;
 use Term::ANSIColor qw(:constants);
+use Time::Piece;
 use YAML::Tiny;
 
 binmode STDOUT, ':utf8';
@@ -21,9 +22,12 @@ sub get_home_timeline {
   my $say = undef; # TODO:
 
   my $nt = _get_net_twitter_obj($user);
-  my $ar = defined $count ? $nt->home_timeline({ count => $count })
-                          : $nt->home_timeline;
-  for my $tweet (reverse @$ar) {
+  my $ss
+    = defined $count
+    ? $nt->home_timeline({ count => $count })
+    : $nt->home_timeline;
+  @$ss = reverse @$ss;
+  for my $tweet (@$ss) {
     $self->print($tweet, $say);
   }
 }
@@ -37,7 +41,7 @@ sub retweet {
   say 'success: retweeted following tweet';
   say '';
   say "http://twitter.com/$s->{user}{screen_name}/status/$s->{id}";
-  $s->{text} = _entities_to_symbols($s->{text});
+  $s->{text} = decode_entities($s->{text});
   say $s->{text};
 }
 
@@ -50,7 +54,7 @@ sub favorite {
   say 'success: faved following tweet';
   say '';
   say "http://twitter.com/$s->{user}{screen_name}/status/$s->{id}";
-  $s->{text} = _entities_to_symbols($s->{text});
+  $s->{text} = decode_entities($s->{text});
   say $s->{text};
 }
 
@@ -63,7 +67,7 @@ sub destroy {
   say 'success: destroyed following tweet';
   say '';
   say "http://twitter.com/$s->{user}{screen_name}/status/$s->{id}";
-  $s->{text} = _entities_to_symbols($s->{text});
+  $s->{text} = decode_entities($s->{text});
   say $s->{text};
 }
 
@@ -102,8 +106,9 @@ sub get_user_timeline {
   my $say = undef; # TODO:
 
   my $nt = _get_net_twitter_obj($user);
-  my $ar = $nt->user_timeline({screen_name => $user_screen_name});
-  for my $tweet (reverse @$ar) {
+  my $ss = $nt->user_timeline({screen_name => $user_screen_name});
+  @$ss = reverse @$ss;
+  for my $tweet (@$ss) {
     $self->print($tweet, $say);
   }
 }
@@ -122,20 +127,20 @@ sub print {
   print ' ';
   print BOLD, $un, RESET;
   say " $url";
-  for (split(/\n/, $tweet->{text})) {
-    my @ss = split / /;
+  for my $t (split(/\n/, $tweet->{text})) {
+    my @ss = split(/ /, $t);
     my $i = 0;
-    for (@ss) {
-      $_ = _entities_to_symbols($_);
-      speech('ja', $_) if defined $say;
-      if (/^(.*)(@[a-zA-Z0-9_]+)(.*)$/) {
+    for my $s (@ss) {
+      $s = decode_entities($s);
+      speech('ja', $s) if defined $say;
+      if ($s =~ /^(.*)(@[a-zA-Z0-9_]+)(.*)$/) {
         print $1;
         _print_color_bold_unsco($2);
         print $3;
-      } elsif (/^(#.+)$/) {
-        print UNDERSCORE, BRIGHT_WHITE, $_, RESET;
+      } elsif ($s =~ /^(#.+)$/) {
+        print UNDERSCORE, BRIGHT_WHITE, $1, RESET;
       } else {
-        print;
+        print $s;
       }
       $i++;
       print ' ' if $i != @ss;
@@ -150,14 +155,6 @@ sub speech {
   $text =~ s/s?https?:\/\/[-_.!~*'()a-zA-Z0-9;\/?:\@&=+\$,%#]+//g;
   $text =~ s/\"/\\"/g;
   `mplayer -user-agent Mozilla "http://translate.google.com/translate_tts?ie=UTF-8&tl=$lang&q=\$(echo "$text" |sed 's/ /\+/g')" >/dev/null 2>&1`;
-}
-
-sub _entities_to_symbols {
-  my ($l) = @_;
-  $l =~ s/\&gt;/>/g;
-  $l =~ s/\&lt;/</g;
-  $l =~ s/\&amp;/&/g;
-  return $l;
 }
 
 sub _print_color_bold_unsco {
@@ -190,11 +187,13 @@ sub post {
   $tweet = decode('UTF-8', $tweet);
 
   my $nt = _get_net_twitter_obj($user);
-  my @ss = defined $id ? $nt->update($tweet, { in_reply_to_status_id => $id })
-                       : $nt->update($tweet);
+  my @ss
+    = defined $id
+    ? $nt->update($tweet, { in_reply_to_status_id => $id })
+    : $nt->update($tweet);
   for my $s (@ss) {
     say "http://twitter.com/$s->{user}{screen_name}/status/$s->{id}";
-    $s->{text} = _entities_to_symbols($s->{text});
+    $s->{text} = decode_entities($s->{text});
     say $s->{text};
   }
 }
@@ -205,11 +204,13 @@ sub post_with_media {
   $tweet = defined $tweet ? decode('UTF-8', $tweet) : '';
 
   my $nt = _get_net_twitter_obj($user);
-  my @ss = defined $id ? $nt->update_with_media($tweet, [ $img ], { in_reply_to_status_id => $id })
-                       : $nt->update_with_media($tweet, [ $img ]);
+  my @ss
+    = defined $id
+    ? $nt->update_with_media($tweet, [ $img ], { in_reply_to_status_id => $id })
+    : $nt->update_with_media($tweet, [ $img ]);
   for my $s (@ss) {
     say "http://twitter.com/$s->{user}{screen_name}/status/$s->{id}";
-    $s->{text} = _entities_to_symbols($s->{text});
+    $s->{text} = decode_entities($s->{text});
     say $s->{text};
   }
 }
@@ -218,9 +219,9 @@ sub _get_net_twitter_obj {
   my ($user) = @_;
 
   my $yamlfile = File::Spec->catfile($ENV{'HOME'}, '.tweemo.yml');
-  my $yaml = YAML::Tiny->read($yamlfile);
+  my $yaml   = YAML::Tiny->read($yamlfile);
   my $config = $yaml->[0];
-  my $du = defined $user ? $user : $config->{default_user};
+  my $du     = defined $user ? $user : $config->{default_user};
   return Net::Twitter->new(
     traits              => ['API::RESTv1_1'],
     consumer_key        => $config->{consumer_key},

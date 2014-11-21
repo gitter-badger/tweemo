@@ -18,9 +18,7 @@ sub run {
   my ($self, @args) = @_;
 
   my ($del, $en, $fav, $id, $img, $n, $rt, $say, $st, $tl, $user);
-  my $p = Getopt::Long::Parser->new(
-    config => [ 'no_ignore_case' ],
-  );
+  my $p = Getopt::Long::Parser->new(config => ['no_ignore_case']);
   $p->getoptionsfromarray(
     \@args,
     'help|?'      => sub { $self->cmd_help;     exit },
@@ -146,24 +144,27 @@ sub cmd_add_user {
 sub cmd_post {
   my ($self, $user, $id, $en, $msg) = @_;
 
-  my $tweet = $en ? Tweemo::Orient->concat_orient_en($msg)
-                  : Tweemo::Orient->concat_orient_ja($msg);
+  my $tweet
+    = defined $en
+    ? Tweemo::Orient->concat_orient_en($msg)
+    : Tweemo::Orient->concat_orient_ja($msg);
   Tweemo::Action->post($user, $id, $tweet);
 }
 
 sub cmd_post_with_media {
   my ($self, $user, $id, $en, $img, $msg) = @_;
 
-  my $tweet = !defined $msg ? ''
-                : $en ? Tweemo::Orient->concat_orient_en($msg)
-                      : Tweemo::Orient->concat_orient_ja($msg);
+  my $tweet
+    = !defined $msg ? ''
+    : $en           ? Tweemo::Orient->concat_orient_en($msg)
+    :                 Tweemo::Orient->concat_orient_ja($msg);
   Tweemo::Action->post_with_media($user, $id, $img, $tweet);
 }
 
 sub _is_user_screen_name {
   my @as = @_;
-  for (@as) {
-    return 1 if /^@[a-zA-Z0-9_]+$/;
+  for my $a (@as) {
+    return 1 if $a =~ /(?^:\@[a-zA-Z0-9_]+)/;
   }
   return 0;
 }
