@@ -28,7 +28,7 @@ sub run {
     'st|stream'   => \$st,
     'say|speech'  => \$say,
     'tl|timeline' => \$tl,
-    'n|num=s'     => \$n,
+    'n|num=i'     => \$n,
     'rt|retweet'  => \$rt,
     'fav'         => \$fav,
     'del'         => \$del,
