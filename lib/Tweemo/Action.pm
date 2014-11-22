@@ -155,7 +155,9 @@ sub speech {
   my ($lang, $text) = @_;
   $text =~ s/s?https?:\/\/[-_.!~*'()a-zA-Z0-9;\/?:\@&=+\$,%#]+//g;
   $text =~ s/\"/\\"/g;
-  `mplayer -user-agent Mozilla "http://translate.google.com/translate_tts?ie=UTF-8&tl=$lang&q=\$(echo "$text" |sed 's/ /\+/g')" >/dev/null 2>&1`;
+  my $mplayer = which('mplayer');
+  die "You should install mplayer\n" unless defined $mplayer;
+  `$mplayer -user-agent Mozilla "http://translate.google.com/translate_tts?ie=UTF-8&tl=$lang&q=\$(echo "$text" |sed 's/ /\+/g')" >/dev/null 2>&1`;
 }
 
 sub _print_color_bold_unsco {

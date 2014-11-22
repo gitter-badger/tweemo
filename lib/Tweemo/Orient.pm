@@ -7,6 +7,7 @@ use DBI;
 use DBD::SQLite;
 use Encode qw(decode);
 use File::Spec;
+use File::Which;
 use FindBin qw($RealBin);
 use Moo;
 use Statistics::Lite qw(mean);
@@ -16,7 +17,8 @@ sub concat_orient_en {
 
   die "error: no message\n" unless defined $msg;
   my $D = "\t"; # delimiter
-  my $treetagger = 'tree-tagger-english';
+  my $treetagger = which('tree-tagger-english');
+  die "You should install TreeTagger\n" unless defined $treetagger;
 
   # Tag Set https://courses.washington.edu/hypertxt/csar-v02/penntable.html
   my $v_regex = qr/^(VB|VBD|VBG|VBN|VBZ|VBP|VD|VDD|VDG|VHN|VHZ|VHP|VV|VVD|VVG|VVN|VVP|VVZ)$/;
@@ -72,6 +74,9 @@ sub concat_orient_ja {
 
   die "error: no message" unless defined $msg;
 
+  my $mecab = which('mecab');
+  die "You should install MeCab\n" unless defined $mecab;
+
   my ($v_regex, $n_regex, $a_regex, $r_regex, $av_regex)
     = (qr/^動詞$/, qr/^名詞$/, qr/^形容詞$/, qr/^副詞$/, qr/^助動詞$/);
 
@@ -81,7 +86,7 @@ sub concat_orient_ja {
   $dbh->{sqlite_unicode} = 1;
 
   (my $s = $msg) =~ s/"/\\"/g;
-  my @xs = split(/\n/, `echo "$s" |mecab`);
+  my @xs = split(/\n/, `echo "$s" |$mecab`);
   my @os = ();
   for my $x (@xs) {
     if ($x =~ /^.+\t(.+),.+,.+,.+,.+,.+,(.+),(.+),.+$/) {
