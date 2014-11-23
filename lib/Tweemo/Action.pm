@@ -101,12 +101,15 @@ sub user_stream {
 }
 
 sub get_user_timeline {
-  my ($self, $user, $user_screen_name) = @_;
+  my ($self, $user, $count, $user_screen_name) = @_;
   $user_screen_name =~ s/^@//;
   my $say = undef; # TODO:
 
   my $nt = _get_net_twitter_obj($user);
-  my $ss = $nt->user_timeline({screen_name => $user_screen_name});
+  my $ss
+    = defined $count
+    ? $nt->user_timeline({screen_name => $user_screen_name, count => $count})
+    : $nt->user_timeline({screen_name => $user_screen_name});
   @$ss = reverse @$ss;
   for my $tweet (@$ss) {
     $self->print($tweet, $say);

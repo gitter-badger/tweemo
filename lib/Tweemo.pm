@@ -21,12 +21,13 @@ tweemo - Perl emotional twitter client
   > tweemo --fav  --id=12345        # favorites the tweet
   > tweemo --del  --id=12346        # destroy my tweet
   > tweemo --en 'text'              # english tweet
-  > tweemo --tl                     # show the 20 most recent tweets
-  > tweemo --tl -n K                # show the K(<= 200) most recent tweets
+  > tweemo --tl                     # show the 20 most recent timeline
+  > tweemo --tl -n K                # show the K(<= 200) most recent timeline
   > tweemo --st                     # user streams
   > tweemo                          # default action is user streams
   > tweemo --say                    # say User streams by Google translate
   > tweemo @foo                     # show the 20 most recent @foo's tweets
+  > tweemo @foo -n K                # show the K(<= 200) most recent @foo's tweets
   > tweemo 'text' --img foo.jpg     # upload image (jpg, png, gif)
 
 =head1 DESCRIPTION

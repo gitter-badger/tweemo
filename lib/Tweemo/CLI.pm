@@ -51,7 +51,7 @@ sub run {
   } elsif ($st || !@args) {
     $self->cmd_user_stream($user, $say);
   } elsif (_is_user_screen_name(@args)) {
-    $self->cmd_get_user_timeline($user, @args);
+    $self->cmd_get_user_timeline($user, $n, @args);
   } else {
     $self->cmd_post($user, $id, $en, @args);
   }
@@ -79,12 +79,12 @@ Options:
  --fav       favorites the tweet (--id required)
  --del       destroy my tweet    (--id required)
  --en        english tweet
- --tl        show the 20 most recent tweets
- --tl -n K   show the K(<= 200) most recent tweets
+ --tl        show the 20 most recent timeline
+ --num       set # of tweets (max 200, used only for --tl and get \@user's tweets)
  --img       upload image (jpg, png, gif)
 
-tweemo \@foo                     # show the 20 most recent \@foo's tweets
-tweemo '\@foo LGTM' --id 12345   # reply to the tweet (http://twitter.com/foo/12345)
+tweemo \@user                     # show the 20 most recent \@user's tweets
+tweemo '\@user LGTM' --id 12345   # reply to the tweet (http://twitter.com/user/12345)
 HELP
 }
 
@@ -133,8 +133,8 @@ sub cmd_user_stream {
 }
 
 sub cmd_get_user_timeline {
-  my ($self, $user, $user_screen_name) = @_;
-  Tweemo::Action->get_user_timeline($user, $user_screen_name);
+  my ($self, $user, $count, $user_screen_name) = @_;
+  Tweemo::Action->get_user_timeline($user, $count, $user_screen_name);
 }
 
 sub cmd_add_user {

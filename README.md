@@ -44,7 +44,7 @@ tweemo --en "Oh god, it's a bikeshed discussion."
 
 # TLの最新20件を取得
 tweemo --tl
-# TL最新100件を取得(最大200件)
+# TLの最新100件を取得(最大200件)
 tweemo --tl -n 100
 
 # User streams
@@ -57,6 +57,8 @@ tweemo --say
 
 # @foo のつぶやき最新20件を取得
 tweemo @foo
+# @foo のつぶやき最新100件を取得(最大200件)
+tweemo @foo -n 100
 
 # 画像upload(jpg, png, gif対応)
 tweemo '穏やかじゃない！' --img image.jpg
