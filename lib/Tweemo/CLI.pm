@@ -164,7 +164,7 @@ sub cmd_post_with_media {
 sub _is_user_screen_name {
   my @as = @_;
   for my $a (@as) {
-    return 1 if $a =~ /(?^:\@[a-zA-Z0-9_]+)/;
+    return 1 if $a =~ /(?^:\@[a-zA-Z0-9_]+$)/;
   }
   return 0;
 }
