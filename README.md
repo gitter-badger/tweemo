@@ -1,5 +1,6 @@
 tweemo
 ====
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/suruga/tweemo?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 つぶやく -> 平均感情値が出る -> 楽しい
 
